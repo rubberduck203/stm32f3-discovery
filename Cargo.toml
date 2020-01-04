@@ -1,5 +1,5 @@
 [package]
-authors = ["Christopher J. McClellan <cmcclellan@pillartechnology.com>"]
+authors = ["Christopher J. McClellan <chris.mcclellan203@gmail.com>"]
 edition = "2018"
 readme = "README.md"
 name = "stm32f3-discovery"
@@ -22,11 +22,11 @@ panic-halt = "0.2.0"
 features = ["stm32f303xc", "rt"]
 version = "0.4.0"
 
-# this lets you use `cargo fix`!
-[[bin]]
-name = "stm32f3-discovery"
-test = false
-bench = false
+# # this lets you use `cargo fix`!
+# [[bin]]
+# name = "stm32f3-discovery"
+# test = false
+# bench = false
 
 [profile.release]
 codegen-units = 1 # better optimizations

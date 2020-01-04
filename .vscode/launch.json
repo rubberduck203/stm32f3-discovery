@@ -7,15 +7,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            /* Configuration for the STM32F303 Discovery board */
+            /* Configuration for the blinky example */
             "type": "cortex-debug",
             "request": "launch",
-            "name": "Debug (OpenOCD)",
+            "name": "Blinky",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-blinky",
             "runToMain": true,
-            "executable": "./target/thumbv7em-none-eabihf/debug/stm32f3-discovery",
+            "executable": "./target/thumbv7em-none-eabihf/debug/examples/blinky",
+            "preLaunchCommands": ["break rust_begin_unwind"],
             "device": "STM32F303VCT6",
             "configFiles": [
                 "interface/stlink-v2-1.cfg",

@@ -19,7 +19,7 @@ fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
     let mut reset_control_clock = device_periphs.RCC.constrain();
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-
+    
     let mut led = gpioe
         .pe13
         .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper);
