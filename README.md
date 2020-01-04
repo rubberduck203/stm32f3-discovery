@@ -1,6 +1,6 @@
-# `stm32f3-discovery-quickstart`
+# `stm32f3-discovery`
 
-Template to develop bare metal Rust applications for the [STM32F3DISCOVERY][stm32f3discovery] board 
+Board support package for the [STM32F3DISCOVERY][stm32f3discovery] board.
 
 ## Dependencies
 
@@ -57,14 +57,8 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
-## Attributions
-
-This project is based on and forked from the [cortex-m-quickstart][cortex-m-quickstart] project.
-
-
 <!-- references -->
 [stm32f3discovery]: https://www.st.com/en/evaluation-tools/stm32f3discovery.html#
-[cortex-m-quickstart]: https://github.com/rust-embedded/cortex-m-quickstart
 [book]: https://rust-embedded.github.io/book
 [discovery-book]: https://rust-embedded.github.io/discovery/
 [cargo-generate-install]: https://github.com/ashleygwilliams/cargo-generate#installation
