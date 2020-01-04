@@ -9,9 +9,9 @@ extern crate panic_halt; // you can put a breakpoint on `rust_begin_unwind` to c
 
 use cortex_m_rt::entry;
 
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
-use stm32f3_discovery::stm32f3xx_hal::stm32;
-use stm32f3_discovery::stm32f3xx_hal::delay::Delay;
+use stm32f3_discovery::prelude::*;
+use stm32f3_discovery::stm32;
+use stm32f3_discovery::delay::Delay;
 
 #[entry]
 fn main() -> ! {
