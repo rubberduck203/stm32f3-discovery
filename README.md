@@ -5,7 +5,7 @@ Board support package for the [STM32F3DISCOVERY][stm32f3discovery] board.
 ## Dependencies
 
 To build embedded programs using this template you'll need:
-
+adfadfa
 - Rust 1.31, 1.30-beta, nightly-2018-09-13 or a newer toolchain. e.g. `rustup
   default beta`
 
