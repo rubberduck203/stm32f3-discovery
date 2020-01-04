@@ -20,5 +20,18 @@
                 "isDefault": true
             }
         },
+        {
+            "label": "build-blinky",
+            "type": "shell",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--example",
+                "blinky"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ]
+        }
     ]
 }
