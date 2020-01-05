@@ -25,16 +25,7 @@ fn main() -> ! {
     let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
     let (leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
 
-    let mut compass = [
-        leds.ld3,  //N
-        leds.ld5,  //NE
-        leds.ld7,  //E
-        leds.ld9,  //SE
-        leds.ld10, //S
-        leds.ld8,  //SW
-        leds.ld6,  //W
-        leds.ld4,  //NW
-    ];
+    let mut compass = leds.into_array();
 
     loop {
         let ms_delay = 50u16;

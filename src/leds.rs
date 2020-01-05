@@ -132,4 +132,20 @@ impl Leds {
             },
         )
     }
+
+    /// Consumes the `Leds` struct and returns an array
+    /// where index 0 is N and each incrementing index
+    /// rotates clockwise around the compass
+    pub fn into_array(self) -> [gpioe::PEx<Output<PushPull>>; 8] {
+        [
+            self.ld3,  //N
+            self.ld5,  //NE
+            self.ld7,  //E
+            self.ld9,  //SE
+            self.ld10, //S
+            self.ld8,  //SW
+            self.ld6,  //W
+            self.ld4,  //NW
+        ]
+    }
 }
