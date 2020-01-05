@@ -8,32 +8,24 @@ pub trait Led {
     fn toggle(&mut self);
 }
 
-macro_rules! led {
-    ($pin:ident) => {
-        impl Led for gpioe::$pin<Output<PushPull>> {
-            fn on(&mut self) {
-                self.set_high().unwrap();
-            }
-            
-            fn off(&mut self) {
-                self.set_low().unwrap();
-            }
-            
-            fn toggle(&mut self) {
-                ToggleableOutputPin::toggle(self).unwrap();
-            }
-        }
-    };
+impl Led for gpioe::PEx<Output<PushPull>> {
+    fn on(&mut self) {
+        self.set_high().unwrap();
+    }
+
+    fn off(&mut self) {
+        self.set_low().unwrap();
+    }
+
+    fn toggle(&mut self) {
+        ToggleableOutputPin::toggle(self).unwrap();
+    }
 }
 
-led!(PE9);
-led!(PE8);
-led!(PE10);
-
 pub struct Leds {
-    pub ld3: gpioe::PE9<Output<PushPull>>,
-    pub ld4: gpioe::PE8<Output<PushPull>>,
-    pub ld5: gpioe::PE10<Output<PushPull>>,
+    pub ld3: gpioe::PEx<Output<PushPull>>,
+    pub ld4: gpioe::PEx<Output<PushPull>>,
+    pub ld5: gpioe::PEx<Output<PushPull>>,
 }
 
 impl Leds {
@@ -45,13 +37,16 @@ impl Leds {
         let mut leds = Leds {
             ld3: gpioe
                 .pe9
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld4: gpioe
                  .pe8
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
             ld5: gpioe
                  .pe10
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
         };
 
         leds.ld3.off();
