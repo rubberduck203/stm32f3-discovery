@@ -1,6 +1,6 @@
-use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
-use stm32f3xx_hal::gpio::{Output, PushPull};
 use stm32f3xx_hal::gpio::gpioe;
+use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
+use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
 
 pub trait Led {
     fn on(&mut self);
@@ -22,6 +22,31 @@ impl Led for gpioe::PEx<Output<PushPull>> {
     }
 }
 
+/// GpioE after Led pins (PE8-PE15) have been moved
+/// If you intend to use those pins for other functions, DO NOT call Leds::init().
+/// You'll have to initialize the pins yourself.
+pub struct GpioE {
+    /// Opaque AFRH register
+    pub afrh: gpioe::AFRH,
+    /// Opaque AFRL register
+    pub afrl: gpioe::AFRL,
+    /// Opaque MODER register
+    pub moder: gpioe::MODER,
+    /// Opaque OTYPER register
+    pub otyper: gpioe::OTYPER,
+    /// Opaque PUPDR register
+    pub pupdr: gpioe::PUPDR,
+
+    pub pe0: gpioe::PE0<Input<Floating>>,
+    pub pe1: gpioe::PE1<Input<Floating>>,
+    pub pe2: gpioe::PE2<Input<Floating>>,
+    pub pe3: gpioe::PE3<Input<Floating>>,
+    pub pe4: gpioe::PE4<Input<Floating>>,
+    pub pe5: gpioe::PE5<Input<Floating>>,
+    pub pe6: gpioe::PE6<Input<Floating>>,
+    pub pe7: gpioe::PE7<Input<Floating>>,
+}
+
 pub struct Leds {
     pub ld3: gpioe::PEx<Output<PushPull>>,
     pub ld4: gpioe::PEx<Output<PushPull>>,
@@ -34,44 +59,48 @@ pub struct Leds {
 }
 
 impl Leds {
-    // TODO: this takes ownership of the entire gpioe port
-    // This needs to erase the pins we've taken control of
-    // and return a new gpioe with the remaining available pins
-    // init(mut gpioe: Parts) -> (Self, NewGpioE)
-    pub fn init(mut gpioe: gpioe::Parts) -> Self {
+    /// Initializes the user LEDs
+    ///
+    /// ## Returns
+    /// A tuple of `(Leds, GpioE)`, where `Leds` has taken ownership of PE8-PE15
+    /// and `GpioE` contains the remaining members of `stm32f3xx_hal::gpio::GPIOE`
+    ///
+    /// **If you intend to use those pins for other functions, DO NOT call Leds::init().**
+    /// You'll have to initialize the pins yourself.
+    pub fn init(mut gpioe: gpioe::Parts) -> (Self, GpioE) {
         let mut leds = Leds {
             ld3: gpioe
                 .pe9
                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                 .downgrade(),
             ld4: gpioe
-                 .pe8
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe8
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld5: gpioe
-                 .pe10
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe10
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld6: gpioe
-                 .pe15
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe15
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld7: gpioe
-                 .pe11
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe11
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld8: gpioe
-                 .pe14
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe14
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld9: gpioe
-                 .pe12
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe12
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
             ld10: gpioe
-                 .pe13
-                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                 .downgrade(),
+                .pe13
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade(),
         };
 
         //TODO: expose an iterator
@@ -84,6 +113,23 @@ impl Leds {
         leds.ld9.off();
         leds.ld10.off();
 
-        leds
+        (
+            leds,
+            GpioE {
+                afrh: gpioe.afrh,
+                afrl: gpioe.afrl,
+                moder: gpioe.moder,
+                otyper: gpioe.otyper,
+                pupdr: gpioe.pupdr,
+                pe0: gpioe.pe0,
+                pe1: gpioe.pe1,
+                pe2: gpioe.pe2,
+                pe3: gpioe.pe3,
+                pe4: gpioe.pe4,
+                pe5: gpioe.pe5,
+                pe6: gpioe.pe6,
+                pe7: gpioe.pe7,
+            },
+        )
     }
 }

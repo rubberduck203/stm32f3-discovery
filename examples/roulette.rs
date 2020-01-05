@@ -15,7 +15,7 @@ use stm32f3_discovery::leds::Led;
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
     let mut reset_control_clock = device_periphs.RCC.constrain();
-    
+
     let core_periphs = cortex_m::Peripherals::take().unwrap();
     let mut flash = device_periphs.FLASH.constrain();
     let clocks = reset_control_clock.cfgr.freeze(&mut flash.acr);
@@ -23,7 +23,7 @@ fn main() -> ! {
 
     // initialize user leds
     let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-    let leds = stm32f3_discovery::leds::Leds::init(gpioe);
+    let (leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
 
     let mut compass = [
         leds.ld3,  //N
@@ -57,5 +57,3 @@ fn main() -> ! {
         // }
     }
 }
-
-
