@@ -21,13 +21,12 @@
             }
         },
         {
-            "label": "build-blinky",
+            "label": "build-examples",
             "type": "shell",
             "command": "cargo",
             "args": [
                 "build",
-                "--example",
-                "blinky"
+                "--examples",
             ],
             "problemMatcher": [
                 "$rustc"
