@@ -23,35 +23,28 @@ fn main() -> ! {
 
     // initialize user leds
     let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-    let mut leds = stm32f3_discovery::leds::Leds::init(gpioe);
+    let leds = stm32f3_discovery::leds::Leds::init(gpioe);
+
+    let mut compass = [
+        leds.ld3,  //N
+        leds.ld5,  //NE
+        leds.ld7,  //E
+        leds.ld9,  //SE
+        leds.ld10, //S
+        leds.ld8,  //SW
+        leds.ld6,  //W
+        leds.ld4,  //NW
+    ];
 
     loop {
         //use this syntax instead of ld3.toggle() to disambiuate from ToggleableOutputPin
-        //TODO: import just what we need to expose?
-        Led::toggle(&mut leds.ld3);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld3);
-        Led::toggle(&mut leds.ld4);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld4);
-        Led::toggle(&mut leds.ld5);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld5);
-        Led::toggle(&mut leds.ld6);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld6);
-        Led::toggle(&mut leds.ld7);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld7);
-        Led::toggle(&mut leds.ld8);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld8);
-        Led::toggle(&mut leds.ld9);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld9);
-        Led::toggle(&mut leds.ld10);
-        delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld10);
+        //TODO: import just what we need to exposes
+        for led in compass.iter_mut() {
+            Led::toggle(led);
+            delay.delay_ms(200u16);
+            Led::toggle(led);
+            delay.delay_ms(200u16);
+        }
     }
 }
 
