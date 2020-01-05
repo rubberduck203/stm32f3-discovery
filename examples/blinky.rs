@@ -19,16 +19,15 @@ use stm32f3_discovery::leds::Led;
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
     let mut reset_control_clock = device_periphs.RCC.constrain();
-    let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-
-    let mut leds = stm32f3_discovery::leds::Leds::init(gpioe);
-    //todo: intialize all leds to off in init method
-    leds.ld3.off();
-
+    
     let core_periphs = cortex_m::Peripherals::take().unwrap();
     let mut flash = device_periphs.FLASH.constrain();
     let clocks = reset_control_clock.cfgr.freeze(&mut flash.acr);
     let mut delay = Delay::new(core_periphs.SYST, clocks);
+
+    // initialize user leds
+    let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
+    let mut leds = stm32f3_discovery::leds::Leds::init(gpioe);
 
     loop {
         //use this syntax instead of ld3.toggle() to disambiuate from ToggleableOutputPin

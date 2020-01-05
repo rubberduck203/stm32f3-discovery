@@ -33,10 +33,14 @@ impl Leds {
     // and return a new gpioe with the remaining available pins
     // init(mut gpioe: Parts) -> (Self, NewGpioE)
     pub fn init(mut gpioe: Parts) -> Self {
-        Leds {
+        let mut leds = Leds {
             ld3: gpioe
                 .pe9
                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
-        }
+        };
+
+        leds.ld3.off();
+
+        leds
     }
 }
