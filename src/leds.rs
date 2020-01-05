@@ -23,8 +23,23 @@ impl Led for gpioe::PE9<Output<PushPull>> {
     }
 }
 
+impl Led for gpioe::PE8<Output<PushPull>> {
+    fn on(&mut self) {
+        self.set_high().unwrap();
+    }
+    
+    fn off(&mut self) {
+        self.set_low().unwrap();
+    }
+    
+    fn toggle(&mut self) {
+        ToggleableOutputPin::toggle(self).unwrap();
+    }
+}
+
 pub struct Leds {
     pub ld3: gpioe::PE9<Output<PushPull>>,
+    pub ld4: gpioe::PE8<Output<PushPull>>,
 }
 
 impl Leds {
@@ -37,9 +52,13 @@ impl Leds {
             ld3: gpioe
                 .pe9
                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+            ld4: gpioe
+                 .pe8
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
         };
 
         leds.ld3.off();
+        leds.ld4.off();
 
         leds
     }

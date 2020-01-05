@@ -38,9 +38,9 @@ fn main() -> ! {
         delay.delay_ms(1000u16);
 
         //explicit on/off
-        leds.ld3.on();
+        leds.ld4.on();
         delay.delay_ms(1000u16);
-        leds.ld3.off();
+        leds.ld4.off();
         delay.delay_ms(1000u16);
     }
 }
