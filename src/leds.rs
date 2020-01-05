@@ -26,6 +26,11 @@ pub struct Leds {
     pub ld3: gpioe::PEx<Output<PushPull>>,
     pub ld4: gpioe::PEx<Output<PushPull>>,
     pub ld5: gpioe::PEx<Output<PushPull>>,
+    pub ld6: gpioe::PEx<Output<PushPull>>,
+    pub ld7: gpioe::PEx<Output<PushPull>>,
+    pub ld8: gpioe::PEx<Output<PushPull>>,
+    pub ld9: gpioe::PEx<Output<PushPull>>,
+    pub ld10: gpioe::PEx<Output<PushPull>>,
 }
 
 impl Leds {
@@ -47,11 +52,37 @@ impl Leds {
                  .pe10
                  .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                  .downgrade(),
+            ld6: gpioe
+                 .pe15
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
+            ld7: gpioe
+                 .pe11
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
+            ld8: gpioe
+                 .pe14
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
+            ld9: gpioe
+                 .pe12
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
+            ld10: gpioe
+                 .pe13
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                 .downgrade(),
         };
 
+        //TODO: expose an iterator
         leds.ld3.off();
         leds.ld4.off();
         leds.ld5.off();
+        leds.ld6.off();
+        leds.ld7.off();
+        leds.ld8.off();
+        leds.ld9.off();
+        leds.ld10.off();
 
         leds
     }
