@@ -37,14 +37,24 @@ fn main() -> ! {
     ];
 
     loop {
-        //use this syntax instead of ld3.toggle() to disambiuate from ToggleableOutputPin
-        //TODO: import just what we need to exposes
-        for led in compass.iter_mut() {
-            Led::toggle(led);
-            delay.delay_ms(200u16);
-            Led::toggle(led);
-            delay.delay_ms(200u16);
+        let ms_delay = 50u16;
+        let ubound = compass.len();
+        for curr in 0..ubound {
+            let next = (curr + 1) % ubound;
+
+            compass[next].on();
+            delay.delay_ms(ms_delay);
+            compass[curr].off();
+            delay.delay_ms(ms_delay);
         }
+
+        // Alternative way to iterate through lights
+        // for led in compass.iter_mut() {
+        //     led.on();
+        //     delay.delay_ms(ms_delay);
+        //     led.off();
+        //     delay.delay_ms(ms_delay);
+        // }
     }
 }
 
