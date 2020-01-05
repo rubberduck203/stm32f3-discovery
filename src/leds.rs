@@ -28,10 +28,12 @@ macro_rules! led {
 
 led!(PE9);
 led!(PE8);
+led!(PE10);
 
 pub struct Leds {
     pub ld3: gpioe::PE9<Output<PushPull>>,
     pub ld4: gpioe::PE8<Output<PushPull>>,
+    pub ld5: gpioe::PE10<Output<PushPull>>,
 }
 
 impl Leds {
@@ -47,10 +49,14 @@ impl Leds {
             ld4: gpioe
                  .pe8
                  .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+            ld5: gpioe
+                 .pe10
+                 .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
         };
 
         leds.ld3.off();
         leds.ld4.off();
+        leds.ld5.off();
 
         leds
     }
