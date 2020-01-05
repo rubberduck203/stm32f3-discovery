@@ -1,6 +1,6 @@
 use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
 use stm32f3xx_hal::gpio::{Output, PushPull};
-use stm32f3xx_hal::gpio::gpioe::*;
+use stm32f3xx_hal::gpio::gpioe;
 
 pub trait Led {
     fn on(&mut self);
@@ -9,7 +9,7 @@ pub trait Led {
 }
 
 //TODO: Probably use a macro to generate impls for the right pins
-impl Led for PE9<Output<PushPull>> {
+impl Led for gpioe::PE9<Output<PushPull>> {
     fn on(&mut self) {
         self.set_high().unwrap();
     }
@@ -24,7 +24,7 @@ impl Led for PE9<Output<PushPull>> {
 }
 
 pub struct Leds {
-    pub ld3: PE9<Output<PushPull>>,
+    pub ld3: gpioe::PE9<Output<PushPull>>,
 }
 
 impl Leds {
@@ -32,7 +32,7 @@ impl Leds {
     // This needs to erase the pins we've taken control of
     // and return a new gpioe with the remaining available pins
     // init(mut gpioe: Parts) -> (Self, NewGpioE)
-    pub fn init(mut gpioe: Parts) -> Self {
+    pub fn init(mut gpioe: gpioe::Parts) -> Self {
         let mut leds = Leds {
             ld3: gpioe
                 .pe9
