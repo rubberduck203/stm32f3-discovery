@@ -28,11 +28,15 @@ pub struct Leds {
 }
 
 impl Leds {
-    // pub fn init(mut gpioe: Parts) -> Self {
-    //     Leds {
-    //         ld3: gpioe
-    //             .pe9
-    //             .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
-    //     }
-    // }
+    // TODO: this takes ownership of the entire gpioe port
+    // This needs to erase the pins we've taken control of
+    // and return a new gpioe with the remaining available pins
+    // init(mut gpioe: Parts) -> (Self, NewGpioE)
+    pub fn init(mut gpioe: Parts) -> Self {
+        Leds {
+            ld3: gpioe
+                .pe9
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper),
+        }
+    }
 }

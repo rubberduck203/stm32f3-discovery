@@ -13,20 +13,16 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
-use stm32f3_discovery::leds::{Led, Leds};
+use stm32f3_discovery::leds::Led;
 
 #[entry]
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
     let mut reset_control_clock = device_periphs.RCC.constrain();
-    let mut gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
+    let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
 
-    //TODO: I would prefer to have a method to init the leds all in one go.
-    // let mut leds = stm32f3_discovery::leds::Leds::init(gpioe);
-
-    let mut leds = Leds {
-        ld3: gpioe.pe9.into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-    };
+    let mut leds = stm32f3_discovery::leds::Leds::init(gpioe);
+    //todo: intialize all leds to off in init method
     leds.ld3.off();
 
     let core_periphs = cortex_m::Peripherals::take().unwrap();
