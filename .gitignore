@@ -11,3 +11,8 @@ target/
 !.vscode/launch.json
 !.vscode/tasks.json
 !.vscode/extensions.json
+
+#temporary files
+.DS_Store
+*.swp
+thumbs.db
