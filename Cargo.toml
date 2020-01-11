@@ -8,6 +8,9 @@ repository = "https://rubberduck203/stm32f3-discovery"
 license = "MIT OR Apache-2.0"
 maintenance = { status = "experimental" }
 version = "0.1.0"
+exclude = [
+    ".vscode/*",
+]
 
 [dependencies]
 cortex-m = "0.6.0"
