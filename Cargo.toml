@@ -3,6 +3,10 @@ authors = ["Christopher J. McClellan <chris.mcclellan203@gmail.com>"]
 edition = "2018"
 readme = "README.md"
 name = "stm32f3-discovery"
+description = "Board support package for the STM32F3DISCOVERY board"
+repository = "https://rubberduck203/stm32f3-discovery"
+license = "MIT OR Apache-2.0"
+maintenance = { status = "experimental" }
 version = "0.1.0"
 
 [dependencies]
