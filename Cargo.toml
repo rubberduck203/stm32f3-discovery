@@ -5,6 +5,9 @@ readme = "README.md"
 name = "stm32f3-discovery"
 description = "Board support package for the STM32F3DISCOVERY board"
 repository = "https://github.com/rubberduck203/stm32f3-discovery"
+documentation = "https://docs.rs/crate/stm32f3-discovery"
+categories = ["embedded", "hardware-support", "no-std"]
+keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
 maintenance = { status = "experimental" }
 version = "0.1.3"
