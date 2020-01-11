@@ -17,6 +17,8 @@ $ cargo install cargo-generate
 $ rustup target add thumbv7em-none-eabihf
 ```
 
+For more info on working with embedded Rust, see the [Embedded Rust Book][book] and the [Discovery Book][discovery-book].
+
 ## VS Code
 
 This repository includes launch configurations for debugging CortexM programs with Visual Studio Code in the `.vscode/` directory.  

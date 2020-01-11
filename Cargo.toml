@@ -7,10 +7,18 @@ description = "Board support package for the STM32F3DISCOVERY board"
 repository = "https://github.com/rubberduck203/stm32f3-discovery"
 license = "MIT OR Apache-2.0"
 maintenance = { status = "experimental" }
-version = "0.1.1"
+version = "0.1.2"
 exclude = [
     ".vscode/*",
 ]
+
+[package.metadata.docs.rs]
+# features = [ "feature1", "feature2" ]
+# all-features = true
+# no-default-features = true
+default-target = "thumbv7em-none-eabihf"
+# rustc-args = [ "--example-rustc-arg" ]
+# rustdoc-args = [ "--example-rustdoc-arg" ]
 
 [dependencies]
 cortex-m = "0.6.0"
