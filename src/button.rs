@@ -1,7 +1,6 @@
 pub mod interrupt {
     use cortex_m::peripheral::NVIC;
-    use stm32f3xx_hal::stm32;
-    use stm32f3xx_hal::stm32::Interrupt;
+    use stm32f3xx_hal::stm32::{SYSCFG, EXTI, Interrupt};
 
     /// Used to clear the external interrupt pending register for the user button without moving the EXTI peripheral into global static state.
     /// EXTI_PR1.PR0
@@ -14,7 +13,7 @@ pub mod interrupt {
     }
 
     /// Configures and enables rising edge interrupt for the User Button on PA0.
-    pub fn enable(external_interrupts: &stm32::EXTI, sysconfig: &stm32::SYSCFG) {
+    pub fn enable(external_interrupts: &EXTI, sysconfig: &SYSCFG) {
         // See chapter 14 of the reference manual
         // https://www.st.com/content/ccc/resource/technical/document/reference_manual/4a/19/6e/18/9d/92/43/32/DM00043574.pdf/files/DM00043574.pdf/jcr:content/translations/en.DM00043574.pdf
 
