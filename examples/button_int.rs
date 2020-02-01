@@ -2,6 +2,8 @@
 #![no_main]
 
 extern crate panic_itm;
+
+use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
 
 use stm32f3_discovery::prelude::*;
@@ -17,8 +19,6 @@ use stm32f3_discovery::leds::Led;
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
     let mut reset_and_clock_control = device_periphs.RCC.constrain();
-
-    let core_periphs = cortex_m::Peripherals::take().unwrap();
 
     // initialize user leds
     let gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
@@ -41,8 +41,9 @@ fn main() -> ! {
     external_interrupt_config.modify(|_, w| unsafe { w.exti0().bits(port_a_config) });
 
     //enable interrupts on EXTI0
-    let mut nvic = core_periphs.NVIC;
-    nvic.enable(Interrupt::EXTI0);
+    unsafe {
+        NVIC::unmask(Interrupt::EXTI0);
+    }
 
     loop {
         // check to see if flag was active and clear it
