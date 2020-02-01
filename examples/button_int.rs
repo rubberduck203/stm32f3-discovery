@@ -59,9 +59,13 @@ static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 fn EXTI0() {
     // pa0 has a low pass filter on it, so no need to debounce in software
     USER_BUTTON_PRESSED.store(true, Ordering::Relaxed);
-    
-    unsafe {
-        const EXTI_PR1: usize = 0x40010414;
-        *(EXTI_PR1 as *mut usize) = 0x01; //clear pending interrupt
+    clear_interrupt_pr0();
+}
+
+fn clear_interrupt_pr0() {
+    const EXTI_PR1: usize = 0x40010414;
+    const PR0: usize = (1 << 0);
+    unsafe{
+        core::ptr::write_volatile(EXTI_PR1 as *mut usize, PR0);
     }
 }
