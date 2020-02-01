@@ -13,6 +13,16 @@ use stm32f3_discovery::button;
 use stm32f3_discovery::interrupt;
 use stm32f3_discovery::leds::Led;
 
+static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
+
+#[interrupt]
+fn EXTI0() {
+    // pa0 has a low pass filter on it, so no need to debounce in software
+    USER_BUTTON_PRESSED.store(true, Ordering::Relaxed);
+    //If we don't clear the interrupt to signal it's been serviced, it will continue to fire.
+    button::interrupt::clear();
+}
+
 #[entry]
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
@@ -31,13 +41,4 @@ fn main() -> ! {
             Led::toggle(&mut status_led);
         }
     }
-}
-
-static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
-
-#[interrupt]
-fn EXTI0() {
-    // pa0 has a low pass filter on it, so no need to debounce in software
-    USER_BUTTON_PRESSED.store(true, Ordering::Relaxed);
-    button::interrupt::clear();
 }
