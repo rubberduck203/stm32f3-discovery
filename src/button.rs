@@ -1,3 +1,33 @@
+use stm32f3xx_hal::gpio::gpioa::PA0;
+use stm32f3xx_hal::gpio::{Input, Floating};
+use stm32f3xx_hal::hal::digital::v2::InputPin;
+
+type Error = ();
+
+pub trait Button {
+    fn is_pressed(&self) -> Result<bool, Error>;
+}
+
+pub struct UserButton {
+    //Has an external pulldown & low pass filter.
+    pin: PA0<Input<Floating>>
+}
+
+impl UserButton {
+    pub fn new(pa0: PA0<Input<Floating>>) -> Self {
+        UserButton {
+            pin: pa0
+        }
+    }
+}
+
+//TODO: Make generic over active high buttons, i.e. Floating (w/ external pull down) + PullDown
+impl Button for UserButton {
+    fn is_pressed(&self) -> Result<bool, Error> {
+        self.pin.is_high()
+    }
+}
+
 pub mod interrupt {
     use cortex_m::peripheral::NVIC;
     use stm32f3xx_hal::stm32::{SYSCFG, EXTI, Interrupt};
