@@ -47,6 +47,8 @@ mod user_button {
         use stm32::Interrupt;
         use stm32f3_discovery::stm32;
 
+        /// Used to clear the external interrupt pending register for the user button without moving the EXTI peripheral into global static state.
+        /// EXTI_PR1.PR0
         pub fn clear() {
             const EXTI_PR1: usize = 0x40010414;
             const PR0: usize = (1 << 0);
@@ -55,15 +57,19 @@ mod user_button {
             }
         }
 
+        /// Configures and enables rising edge interrupt for the User Button on PA0.
         pub fn enable(external_interrupts: &stm32::EXTI, sysconfig: &stm32::SYSCFG) {
+            // See chapter 14 of the reference manual
+            // https://www.st.com/content/ccc/resource/technical/document/reference_manual/4a/19/6e/18/9d/92/43/32/DM00043574.pdf/files/DM00043574.pdf/jcr:content/translations/en.DM00043574.pdf
+
             // enable exti0
-            let interrupt_mask_reg = &external_interrupts.imr1;
-            interrupt_mask_reg.modify(|_, w| w.mr0().set_bit());
+            let interrupt_mask = &external_interrupts.imr1;
+            interrupt_mask.modify(|_, w| w.mr0().set_bit());
 
             //TODO: take enum to specify trigger mode {rising, falling, both}
             // trigger on rising edge
-            let rising_trigger_select_reg = &external_interrupts.rtsr1;
-            rising_trigger_select_reg.modify(|_, w| w.tr0().set_bit());
+            let rising_trigger_select = &external_interrupts.rtsr1;
+            rising_trigger_select.modify(|_, w| w.tr0().set_bit());
 
             // map line EXTI0 to PA0
             let external_interrupt_config = &sysconfig.exticr1;
