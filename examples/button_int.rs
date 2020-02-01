@@ -25,25 +25,7 @@ fn main() -> ! {
     let (leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
     let mut status_led = leds.ld3;
 
-    //TODO: Extract methods
-    let external_interrupts = device_periphs.EXTI;
-    // enable exti0
-    let interrupt_mask_reg = &external_interrupts.imr1;
-    interrupt_mask_reg.modify(|_, w| w.mr0().set_bit());
-    // trigger on rising edge
-    let rising_trigger_select_reg = &external_interrupts.rtsr1;
-    rising_trigger_select_reg.modify(|_, w| w.tr0().set_bit());
-
-    // map line EXTI0 to PA0
-    let syscfg = device_periphs.SYSCFG;
-    let external_interrupt_config = &syscfg.exticr1;
-    let port_a_config = 0x000;
-    external_interrupt_config.modify(|_, w| unsafe { w.exti0().bits(port_a_config) });
-
-    //enable interrupts on EXTI0
-    unsafe {
-        NVIC::unmask(Interrupt::EXTI0);
-    }
+    enable_button_interrupt(&device_periphs.EXTI, &device_periphs.SYSCFG);
 
     loop {
         // check to see if flag was active and clear it
@@ -67,5 +49,26 @@ fn clear_interrupt_pr0() {
     const PR0: usize = (1 << 0);
     unsafe{
         core::ptr::write_volatile(EXTI_PR1 as *mut usize, PR0);
+    }
+}
+
+fn enable_button_interrupt(external_interrupts: &stm32::EXTI, sysconfig: &stm32::SYSCFG) {
+    // enable exti0
+    let interrupt_mask_reg = &external_interrupts.imr1;
+    interrupt_mask_reg.modify(|_, w| w.mr0().set_bit());
+
+    //TODO: take enum to specify trigger mode {rising, falling, both}
+    // trigger on rising edge
+    let rising_trigger_select_reg = &external_interrupts.rtsr1;
+    rising_trigger_select_reg.modify(|_, w| w.tr0().set_bit());
+
+    // map line EXTI0 to PA0
+    let external_interrupt_config = &sysconfig.exticr1;
+    const PORT_A_CONFIG: u8 = 0x000;
+    external_interrupt_config.modify(|_, w| unsafe { w.exti0().bits(PORT_A_CONFIG) });
+
+    //enable interrupts on EXTI0
+    unsafe {
+        NVIC::unmask(Interrupt::EXTI0);
     }
 }
