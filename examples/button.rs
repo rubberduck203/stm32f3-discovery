@@ -29,8 +29,6 @@ fn main() -> ! {
     let gpioa = device_periphs.GPIOA.split(&mut reset_and_clock_control.ahb);
     let button = gpioa.pa0; //defaults to Input<Floating>; Has an external pulldown & low pass filter.
 
-    //NOTE: pa0 -> vector exti0
-
     loop {
         delay.delay_ms(50u16);
 
