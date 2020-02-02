@@ -8,6 +8,8 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
+use stm32f3_discovery::button::hal::Button;
+use stm32f3_discovery::button::UserButton;
 use stm32f3_discovery::leds::Led;
 
 #[entry]
@@ -27,17 +29,15 @@ fn main() -> ! {
 
     // initialize user button
     let gpioa = device_periphs.GPIOA.split(&mut reset_and_clock_control.ahb);
-    let button = gpioa.pa0; //defaults to Input<Floating>; Has an external pulldown & low pass filter.
-
-    //NOTE: pa0 -> vector exti0
+    let button = UserButton::new(gpioa.pa0);
 
     loop {
         delay.delay_ms(50u16);
 
-        match button.is_high() {
+        match button.is_pressed() {
             Ok(true) => status_led.on(),
             Ok(false) => status_led.off(),
-            Err(_e) => panic!("Failed to read button state")
+            Err(_e) => panic!("Failed to read button state"),
         }
     }
 }
