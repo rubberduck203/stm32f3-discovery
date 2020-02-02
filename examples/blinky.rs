@@ -9,7 +9,7 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
-use stm32f3_discovery::leds::Led;
+use stm32f3_discovery::leds::hal::{Led, ToggleableLed};
 
 #[entry]
 fn main() -> ! {
@@ -26,17 +26,15 @@ fn main() -> ! {
     let (mut leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
 
     loop {
-        //use this syntax instead of ld3.toggle() to disambiuate from ToggleableOutputPin
-        //TODO: import just what we need to expose?
-        Led::toggle(&mut leds.ld3);
+        leds.ld3.toggle().ok();
         delay.delay_ms(1000u16);
-        Led::toggle(&mut leds.ld3);
+        leds.ld3.toggle().ok();
         delay.delay_ms(1000u16);
 
         //explicit on/off
-        leds.ld4.on();
+        leds.ld4.on().ok();
         delay.delay_ms(1000u16);
-        leds.ld4.off();
+        leds.ld4.off().ok();
         delay.delay_ms(1000u16);
     }
 }

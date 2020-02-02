@@ -10,7 +10,7 @@ use stm32f3_discovery::stm32;
 
 use stm32f3_discovery::button::hal::Button;
 use stm32f3_discovery::button::UserButton;
-use stm32f3_discovery::leds::Led;
+use stm32f3_discovery::leds::hal::Led;
 
 #[entry]
 fn main() -> ! {
@@ -35,9 +35,15 @@ fn main() -> ! {
         delay.delay_ms(50u16);
 
         match button.is_pressed() {
-            Ok(true) => status_led.on(),
-            Ok(false) => status_led.off(),
-            Err(_e) => panic!("Failed to read button state"),
+            Ok(true) => {
+                status_led.on().ok();
+            }
+            Ok(false) => {
+                status_led.off().ok();
+            }
+            Err(_) => {
+                panic!("Failed to read button state");
+            }
         }
     }
 }
