@@ -2,10 +2,9 @@ use stm32f3xx_hal::gpio::gpioa::PA0;
 use stm32f3xx_hal::gpio::{Input, Floating};
 use stm32f3xx_hal::hal::digital::v2::InputPin;
 
-type Error = ();
-
 pub trait Button {
-    fn is_pressed(&self) -> Result<bool, Error>;
+    type Error;
+    fn is_pressed(&self) -> Result<bool, Self::Error>;
 }
 
 pub struct UserButton {
@@ -23,8 +22,32 @@ impl UserButton {
 
 //TODO: Make generic over active high buttons, i.e. Floating (w/ external pull down) + PullDown
 impl Button for UserButton {
-    fn is_pressed(&self) -> Result<bool, Error> {
+    type Error = ();
+    fn is_pressed(&self) -> Result<bool, Self::Error> {
         self.pin.is_high()
+    }
+}
+
+pub mod foo {
+    use stm32f3xx_hal::hal::digital::v2::InputPin;
+
+    pub struct ActiveHighButton<T> where T: InputPin {
+        pin: T
+    }
+
+    impl <T: InputPin> ActiveHighButton<T> {
+        pub fn new(pin: T) -> Self {
+            ActiveHighButton {
+                pin: pin
+            }
+        }
+    }
+
+    impl <T: InputPin> super::Button for ActiveHighButton<T> {
+        type Error = <T as stm32f3xx_hal::hal::digital::v2::InputPin>::Error;
+        fn is_pressed(&self) -> Result<bool, Self::Error> {
+            self.pin.is_high()
+        }
     }
 }
 
