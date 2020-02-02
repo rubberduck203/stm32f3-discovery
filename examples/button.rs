@@ -9,9 +9,8 @@ use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
 use stm32f3_discovery::leds::Led;
-use stm32f3_discovery::button::{Button, UserButton};
-
-use stm32f3_discovery::button::foo;
+use stm32f3_discovery::button::UserButton;
+use stm32f3_discovery::button::hal::Button;
 
 #[entry]
 fn main() -> ! {
@@ -30,8 +29,7 @@ fn main() -> ! {
 
     // initialize user button
     let gpioa = device_periphs.GPIOA.split(&mut reset_and_clock_control.ahb);
-    //let button = UserButton::new(gpioa.pa0);
-    let button = foo::ActiveHighButton::new(gpioa.pa0);
+    let button = UserButton::new(gpioa.pa0);
 
     loop {
         delay.delay_ms(50u16);

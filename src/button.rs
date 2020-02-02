@@ -1,35 +1,35 @@
 use stm32f3xx_hal::gpio::gpioa::PA0;
 use stm32f3xx_hal::gpio::{Input, Floating};
-use stm32f3xx_hal::hal::digital::v2::InputPin;
+use hal::{Button, ActiveHighButton};
 
-pub trait Button {
-    type Error;
-    fn is_pressed(&self) -> Result<bool, Self::Error>;
-}
 
-pub struct UserButton {
-    //Has an external pulldown & low pass filter.
-    pin: PA0<Input<Floating>>
-}
+/// Wrapper struct around `ActiveHighButton<PA0<Input<Floating>>>`
+/// It's floating because there's an external pull down resistor and low pass filter circuit.
+pub struct UserButton(ActiveHighButton<PA0<Input<Floating>>>);
 
 impl UserButton {
+    /// Typesafe constructor for the UserButton peripheral on PA0.
+    /// It's impossible to construct this button with the wrong pin or pin state.
+    /// It's also impossible to construct more than one `UserButton` instance because `gpioa.pa0` is moved upon construction.
     pub fn new(pa0: PA0<Input<Floating>>) -> Self {
-        UserButton {
-            pin: pa0
-        }
+        UserButton(ActiveHighButton::new(pa0))
     }
 }
 
-//TODO: Make generic over active high buttons, i.e. Floating (w/ external pull down) + PullDown
 impl Button for UserButton {
     type Error = ();
     fn is_pressed(&self) -> Result<bool, Self::Error> {
-        self.pin.is_high()
+        self.0.is_pressed()
     }
 }
 
-pub mod foo {
+pub mod hal {
     use stm32f3xx_hal::hal::digital::v2::InputPin;
+
+    pub trait Button {
+        type Error;
+        fn is_pressed(&self) -> Result<bool, Self::Error>;
+    }
 
     pub struct ActiveHighButton<T> where T: InputPin {
         pin: T
@@ -43,20 +43,51 @@ pub mod foo {
         }
     }
 
-    impl <T: InputPin> super::Button for ActiveHighButton<T> {
+    impl <T: InputPin> Button for ActiveHighButton<T> {
         type Error = <T as stm32f3xx_hal::hal::digital::v2::InputPin>::Error;
         fn is_pressed(&self) -> Result<bool, Self::Error> {
             self.pin.is_high()
         }
     }
+    
+    pub struct ActiveLowButton<T> where T: InputPin {
+        pin: T
+    }
+    
+    impl <T: InputPin> ActiveLowButton<T> {
+        pub fn new(pin: T) -> Self {
+            ActiveLowButton {
+                pin: pin
+            }
+        }
+    }
+    
+    impl <T: InputPin> Button for ActiveLowButton<T> {
+        type Error = <T as stm32f3xx_hal::hal::digital::v2::InputPin>::Error;
+        fn is_pressed(&self) -> Result<bool, Self::Error> {
+            self.pin.is_low()
+        }
+    }
 }
 
+/// Provides interrupt features for `UserButton` on PA0 for the board
 pub mod interrupt {
     use cortex_m::peripheral::NVIC;
     use stm32f3xx_hal::stm32::{SYSCFG, EXTI, Interrupt};
 
     /// Used to clear the external interrupt pending register for the user button without moving the EXTI peripheral into global static state.
-    /// EXTI_PR1.PR0
+    ///
+    /// # Note
+    /// This does modify hardware register EXTI_PR1.PR0 and should probably only be called from `EXTI0` interrupt context
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// #[interrupt]
+    /// fn EXTI0() {
+    /// // If we don't clear the interrupt to signal it's been serviced, it will continue to fire.
+    /// button::interrupt::clear();
+    /// ```
     pub fn clear() {
         const EXTI_PR1: usize = 0x40010414;
         const PR0: usize = (1 << 0);
@@ -65,7 +96,14 @@ pub mod interrupt {
         }
     }
 
-    /// Configures and enables rising edge interrupt for the User Button on PA0.
+    /// Configures and enables rising edge interrupt for the `UserButton` on PA0.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let device_periphs = stm32::Peripherals::take().unwrap();
+    /// button::interrupt::enable(&device_periphs.EXTI, &device_periphs.SYSCFG);
+    /// ```
     pub fn enable(external_interrupts: &EXTI, sysconfig: &SYSCFG) {
         // See chapter 14 of the reference manual
         // https://www.st.com/content/ccc/resource/technical/document/reference_manual/4a/19/6e/18/9d/92/43/32/DM00043574.pdf/files/DM00043574.pdf/jcr:content/translations/en.DM00043574.pdf
