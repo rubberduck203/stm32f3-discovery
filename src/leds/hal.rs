@@ -45,3 +45,36 @@ impl<T: OutputPin + ToggleableOutputPin> ToggleableLed for ActiveHighLed<T> {
         self.pin.toggle()
     }
 }
+
+pub struct ActiveLowLed<T>
+where
+    T: OutputPin,
+{
+    pin: T,
+}
+
+impl<T: OutputPin> ActiveLowLed<T> {
+    pub fn new(pin: T) -> Self {
+        ActiveLowLed { pin: pin }
+    }
+}
+
+impl<T: OutputPin> Led for ActiveLowLed<T> {
+    type Error = <T as OutputPin>::Error;
+
+    fn on(&mut self) -> Result<(), Self::Error> {
+        self.pin.set_low()
+    }
+
+    fn off(&mut self) -> Result<(), Self::Error> {
+        self.pin.set_high()
+    }
+}
+
+impl<T: OutputPin + ToggleableOutputPin> ToggleableLed for ActiveLowLed<T> {
+    type Error = <T as ToggleableOutputPin>::Error;
+
+    fn toggle(&mut self) -> Result<(), Self::Error> {
+        self.pin.toggle()
+    }
+}
