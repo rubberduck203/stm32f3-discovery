@@ -10,15 +10,15 @@ pub trait Led {
 
 impl Led for gpioe::PEx<Output<PushPull>> {
     fn on(&mut self) {
-        self.set_high().unwrap();
+        self.set_high().ok();
     }
 
     fn off(&mut self) {
-        self.set_low().unwrap();
+        self.set_low().ok();
     }
 
     fn toggle(&mut self) {
-        ToggleableOutputPin::toggle(self).unwrap();
+        ToggleableOutputPin::toggle(self).ok();
     }
 }
 
