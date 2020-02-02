@@ -19,7 +19,7 @@ impl<T: InputPin> ActiveHighButton<T> {
 }
 
 impl<T: InputPin> Button for ActiveHighButton<T> {
-    type Error = <T as stm32f3xx_hal::hal::digital::v2::InputPin>::Error;
+    type Error = <T as InputPin>::Error;
     fn is_pressed(&self) -> Result<bool, Self::Error> {
         self.pin.is_high()
     }
@@ -39,7 +39,7 @@ impl<T: InputPin> ActiveLowButton<T> {
 }
 
 impl<T: InputPin> Button for ActiveLowButton<T> {
-    type Error = <T as stm32f3xx_hal::hal::digital::v2::InputPin>::Error;
+    type Error = <T as InputPin>::Error;
     fn is_pressed(&self) -> Result<bool, Self::Error> {
         self.pin.is_low()
     }

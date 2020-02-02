@@ -1,57 +1,9 @@
+pub mod hal;
+
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
 
 use hal::{ActiveHighLed, Led};
-
-pub mod hal {
-    use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
-
-    pub trait Led {
-        type Error;
-
-        fn on(&mut self) -> Result<(), Self::Error>;
-        fn off(&mut self) -> Result<(), Self::Error>;
-    }
-
-    pub trait ToggleableLed {
-        type Error;
-
-        fn toggle(&mut self) -> Result<(), Self::Error>;
-    }
-
-    pub struct ActiveHighLed<T>
-    where
-        T: OutputPin,
-    {
-        pin: T,
-    }
-
-    impl<T: OutputPin> ActiveHighLed<T> {
-        pub fn new(pin: T) -> Self {
-            ActiveHighLed { pin: pin }
-        }
-    }
-
-    impl<T: OutputPin> Led for ActiveHighLed<T> {
-        type Error = <T as stm32f3xx_hal::hal::digital::v2::OutputPin>::Error;
-
-        fn on(&mut self) -> Result<(), Self::Error> {
-            self.pin.set_high()
-        }
-
-        fn off(&mut self) -> Result<(), Self::Error> {
-            self.pin.set_low()
-        }
-    }
-
-    impl<T: OutputPin + ToggleableOutputPin> ToggleableLed for ActiveHighLed<T> {
-        type Error = <T as stm32f3xx_hal::hal::digital::v2::ToggleableOutputPin>::Error;
-
-        fn toggle(&mut self) -> Result<(), Self::Error> {
-            self.pin.toggle()
-        }
-    }
-}
 
 /// GpioE after Led pins (PE8-PE15) have been moved
 /// If you intend to use those pins for other functions, DO NOT call Leds::init().
