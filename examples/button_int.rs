@@ -11,7 +11,7 @@ use stm32f3_discovery::stm32;
 use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
 use stm32f3_discovery::interrupt;
-use stm32f3_discovery::leds::Led;
+use stm32f3_discovery::leds::hal::ToggleableLed;
 
 static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 
@@ -38,7 +38,7 @@ fn main() -> ! {
     loop {
         // check to see if flag was active and clear it
         if USER_BUTTON_PRESSED.swap(false, Ordering::AcqRel) {
-            Led::toggle(&mut status_led);
+            status_led.toggle().ok();
         }
     }
 }

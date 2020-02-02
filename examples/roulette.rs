@@ -9,7 +9,7 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
-use stm32f3_discovery::leds::Led;
+use stm32f3_discovery::leds::hal::Led;
 
 #[entry]
 fn main() -> ! {
@@ -33,17 +33,17 @@ fn main() -> ! {
         for curr in 0..ubound {
             let next = (curr + 1) % ubound;
 
-            compass[next].on();
+            compass[next].on().ok();
             delay.delay_ms(ms_delay);
-            compass[curr].off();
+            compass[curr].off().ok();
             delay.delay_ms(ms_delay);
         }
 
         // Alternative way to iterate through lights
         // for led in compass.iter_mut() {
-        //     led.on();
+        //     led.on().ok();
         //     delay.delay_ms(ms_delay);
-        //     led.off();
+        //     led.off().ok();
         //     delay.delay_ms(ms_delay);
         // }
     }

@@ -1,24 +1,55 @@
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
-use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
 
-pub trait Led {
-    fn on(&mut self);
-    fn off(&mut self);
-    fn toggle(&mut self);
-}
+use hal::{ActiveHighLed, Led};
 
-impl Led for gpioe::PEx<Output<PushPull>> {
-    fn on(&mut self) {
-        self.set_high().ok();
+pub mod hal {
+    use stm32f3xx_hal::hal::digital::v2::{OutputPin, ToggleableOutputPin};
+
+    pub trait Led {
+        type Error;
+
+        fn on(&mut self) -> Result<(), Self::Error>;
+        fn off(&mut self) -> Result<(), Self::Error>;
     }
 
-    fn off(&mut self) {
-        self.set_low().ok();
+    pub trait ToggleableLed {
+        type Error;
+
+        fn toggle(&mut self) -> Result<(), Self::Error>;
     }
 
-    fn toggle(&mut self) {
-        ToggleableOutputPin::toggle(self).ok();
+    pub struct ActiveHighLed<T>
+    where
+        T: OutputPin,
+    {
+        pin: T,
+    }
+
+    impl<T: OutputPin> ActiveHighLed<T> {
+        pub fn new(pin: T) -> Self {
+            ActiveHighLed { pin: pin }
+        }
+    }
+
+    impl<T: OutputPin> Led for ActiveHighLed<T> {
+        type Error = <T as stm32f3xx_hal::hal::digital::v2::OutputPin>::Error;
+
+        fn on(&mut self) -> Result<(), Self::Error> {
+            self.pin.set_high()
+        }
+
+        fn off(&mut self) -> Result<(), Self::Error> {
+            self.pin.set_low()
+        }
+    }
+
+    impl<T: OutputPin + ToggleableOutputPin> ToggleableLed for ActiveHighLed<T> {
+        type Error = <T as stm32f3xx_hal::hal::digital::v2::ToggleableOutputPin>::Error;
+
+        fn toggle(&mut self) -> Result<(), Self::Error> {
+            self.pin.toggle()
+        }
     }
 }
 
@@ -48,14 +79,14 @@ pub struct GpioE {
 }
 
 pub struct Leds {
-    pub ld3: gpioe::PEx<Output<PushPull>>,
-    pub ld4: gpioe::PEx<Output<PushPull>>,
-    pub ld5: gpioe::PEx<Output<PushPull>>,
-    pub ld6: gpioe::PEx<Output<PushPull>>,
-    pub ld7: gpioe::PEx<Output<PushPull>>,
-    pub ld8: gpioe::PEx<Output<PushPull>>,
-    pub ld9: gpioe::PEx<Output<PushPull>>,
-    pub ld10: gpioe::PEx<Output<PushPull>>,
+    pub ld3: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld4: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld5: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld6: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld7: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld8: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld9: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld10: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
 }
 
 impl Leds {
@@ -69,49 +100,65 @@ impl Leds {
     /// You'll have to initialize the pins yourself.
     pub fn init(mut gpioe: gpioe::Parts) -> (Self, GpioE) {
         let mut leds = Leds {
-            ld3: gpioe
-                .pe9
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld4: gpioe
-                .pe8
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld5: gpioe
-                .pe10
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld6: gpioe
-                .pe15
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld7: gpioe
-                .pe11
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld8: gpioe
-                .pe14
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld9: gpioe
-                .pe12
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
-            ld10: gpioe
-                .pe13
-                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                .downgrade(),
+            ld3: ActiveHighLed::new(
+                gpioe
+                    .pe9
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld4: ActiveHighLed::new(
+                gpioe
+                    .pe8
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld5: ActiveHighLed::new(
+                gpioe
+                    .pe10
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld6: ActiveHighLed::new(
+                gpioe
+                    .pe15
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld7: ActiveHighLed::new(
+                gpioe
+                    .pe11
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld8: ActiveHighLed::new(
+                gpioe
+                    .pe14
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld9: ActiveHighLed::new(
+                gpioe
+                    .pe12
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
+            ld10: ActiveHighLed::new(
+                gpioe
+                    .pe13
+                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                    .downgrade(),
+            ),
         };
 
         //TODO: expose an iterator
-        leds.ld3.off();
-        leds.ld4.off();
-        leds.ld5.off();
-        leds.ld6.off();
-        leds.ld7.off();
-        leds.ld8.off();
-        leds.ld9.off();
-        leds.ld10.off();
+        leds.ld3.off().ok();
+        leds.ld4.off().ok();
+        leds.ld5.off().ok();
+        leds.ld6.off().ok();
+        leds.ld7.off().ok();
+        leds.ld8.off().ok();
+        leds.ld9.off().ok();
+        leds.ld10.off().ok();
 
         (
             leds,
@@ -136,7 +183,7 @@ impl Leds {
     /// Consumes the `Leds` struct and returns an array
     /// where index 0 is N and each incrementing index
     /// rotates clockwise around the compass
-    pub fn into_array(self) -> [gpioe::PEx<Output<PushPull>>; 8] {
+    pub fn into_array(self) -> [ActiveHighLed<gpioe::PEx<Output<PushPull>>>; 8] {
         [
             self.ld3,  //N
             self.ld5,  //NE
