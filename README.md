@@ -19,10 +19,22 @@ $ rustup target add thumbv7em-none-eabihf
 
 For more info on working with embedded Rust, see the [Embedded Rust Book][book] and the [Discovery Book][discovery-book].
 
+## Documentation
+
+This crate currently re-exports all of `stm32f3xx-hal`,
+so the [docs.rs documentation](https://docs.rs/stm32f3-discovery) is a bit cluttered with that information.
+
+For the board specific functionality this crate adds, see:
+ - The [examples directory](./examples).
+ - The [leds module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/leds/index.html)
+ - The [button module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/button/index.html)
+
 ## VS Code
 
 This repository includes launch configurations for debugging CortexM programs with Visual Studio Code in the `.vscode/` directory.  
 See [.vscode/README.md](./.vscode/README.md) for more information.  
+
+To debug one of the examples, open the example source file in the editor and press F5.
 
 # License
 
