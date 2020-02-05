@@ -1,9 +1,7 @@
-pub mod hal;
-
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
 
-use hal::{ActiveHighLed, Led};
+use switch_hal::output::{ActiveHigh, Switch, OutputSwitch};
 
 /// GpioE after Led pins (PE8-PE15) have been moved
 /// If you intend to use those pins for other functions, DO NOT call Leds::init().
@@ -31,14 +29,14 @@ pub struct GpioE {
 }
 
 pub struct Leds {
-    pub ld3: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld4: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld5: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld6: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld7: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld8: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld9: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
-    pub ld10: ActiveHighLed<gpioe::PEx<Output<PushPull>>>,
+    pub ld3: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld4: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld5: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld6: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld7: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld8: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld9: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld10: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
 }
 
 impl Leds {
@@ -52,49 +50,49 @@ impl Leds {
     /// You'll have to initialize the pins yourself.
     pub fn init(mut gpioe: gpioe::Parts) -> (Self, GpioE) {
         let mut leds = Leds {
-            ld3: ActiveHighLed::new(
+            ld3: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe9
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld4: ActiveHighLed::new(
+            ld4: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe8
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld5: ActiveHighLed::new(
+            ld5: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe10
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld6: ActiveHighLed::new(
+            ld6: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe15
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld7: ActiveHighLed::new(
+            ld7: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe11
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld8: ActiveHighLed::new(
+            ld8: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe14
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld9: ActiveHighLed::new(
+            ld9: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe12
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
                     .downgrade(),
             ),
-            ld10: ActiveHighLed::new(
+            ld10: Switch::<_, ActiveHigh>::new(
                 gpioe
                     .pe13
                     .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
@@ -135,7 +133,7 @@ impl Leds {
     /// Consumes the `Leds` struct and returns an array
     /// where index 0 is N and each incrementing index
     /// rotates clockwise around the compass
-    pub fn into_array(self) -> [ActiveHighLed<gpioe::PEx<Output<PushPull>>>; 8] {
+    pub fn into_array(self) -> [Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>; 8] {
         [
             self.ld3,  //N
             self.ld5,  //NE

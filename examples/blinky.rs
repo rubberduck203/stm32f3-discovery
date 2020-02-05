@@ -9,7 +9,7 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
-use stm32f3_discovery::leds::hal::{Led, ToggleableLed};
+use switch_hal::output::{OutputSwitch, ToggleableOutputSwitch};
 
 #[entry]
 fn main() -> ! {
