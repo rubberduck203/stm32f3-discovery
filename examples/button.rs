@@ -10,7 +10,8 @@ use stm32f3_discovery::stm32;
 
 use stm32f3_discovery::button::hal::Button;
 use stm32f3_discovery::button::UserButton;
-use stm32f3_discovery::leds::hal::Led;
+
+use switch_hal::output::OutputSwitch;
 
 #[entry]
 fn main() -> ! {

@@ -11,7 +11,8 @@ use stm32f3_discovery::stm32;
 use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
 use stm32f3_discovery::interrupt;
-use stm32f3_discovery::leds::hal::ToggleableLed;
+
+use switch_hal::output::ToggleableOutputSwitch;
 
 static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 
