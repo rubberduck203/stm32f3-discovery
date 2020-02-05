@@ -9,6 +9,7 @@ documentation = "https://docs.rs/crate/stm32f3-discovery"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
+readme = "README.md"
 maintenance = { status = "experimental" }
 version = "0.2.0"
 exclude = [
