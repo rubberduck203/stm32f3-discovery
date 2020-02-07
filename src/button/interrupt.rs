@@ -1,4 +1,4 @@
-/// Provides interrupt features for `UserButton` on PA0 for the board
+//! Provides interrupt features for `UserButton` on PA0 for the board
 use cortex_m::peripheral::NVIC;
 use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
 
