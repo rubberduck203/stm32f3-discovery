@@ -5,14 +5,14 @@ extern crate panic_itm;
 
 use cortex_m_rt::entry;
 
-use stm32f3xx_hal::prelude::*;
-use stm32f3xx_hal::stm32;
-use stm32f3xx_hal::interrupt;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
+use stm32f3_discovery::stm32f3xx_hal::stm32;
+use stm32f3_discovery::stm32f3xx_hal::interrupt;
 
 use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
 
-use switch_hal::ToggleableOutputSwitch;
+use stm32f3_discovery::switch_hal::ToggleableOutputSwitch;
 use stm32f3_discovery::leds::Leds;
 
 static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
