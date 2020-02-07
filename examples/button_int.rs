@@ -5,14 +5,15 @@ extern crate panic_itm;
 
 use cortex_m_rt::entry;
 
-use stm32f3_discovery::prelude::*;
-use stm32f3_discovery::stm32;
+use stm32f3xx_hal::prelude::*;
+use stm32f3xx_hal::stm32;
+use stm32f3xx_hal::interrupt;
 
 use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
-use stm32f3_discovery::interrupt;
 
 use switch_hal::ToggleableOutputSwitch;
+use stm32f3_discovery::leds::Leds;
 
 static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 
@@ -31,7 +32,7 @@ fn main() -> ! {
 
     // initialize user leds
     let gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
-    let (leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
+    let (leds, _gpioe) = Leds::init(gpioe);
     let mut status_led = leds.ld3;
 
     button::interrupt::enable(&device_periphs.EXTI, &device_periphs.SYSCFG);

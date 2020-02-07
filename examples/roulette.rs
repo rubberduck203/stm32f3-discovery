@@ -5,11 +5,12 @@ extern crate panic_itm;
 
 use cortex_m_rt::entry;
 
-use stm32f3_discovery::delay::Delay;
-use stm32f3_discovery::prelude::*;
-use stm32f3_discovery::stm32;
+use stm32f3xx_hal::delay::Delay;
+use stm32f3xx_hal::prelude::*;
+use stm32f3xx_hal::stm32;
 
 use switch_hal::OutputSwitch;
+use stm32f3_discovery::leds::Leds;
 
 #[entry]
 fn main() -> ! {
@@ -23,7 +24,7 @@ fn main() -> ! {
 
     // initialize user leds
     let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-    let (leds, _gpioe) = stm32f3_discovery::leds::Leds::init(gpioe);
+    let (leds, _gpioe) = Leds::init(gpioe);
 
     let mut compass = leds.into_array();
 
