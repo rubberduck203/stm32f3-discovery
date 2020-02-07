@@ -2,6 +2,11 @@
 
 Board support package for the [STM32F3DISCOVERY][stm32f3discovery] board.
 
+![Rust](https://github.com/rubberduck203/stm32f3-discovery/workflows/Rust/badge.svg)
+[![crates.io](https://img.shields.io/crates/d/stm32f3-discovery.svg)](https://crates.io/crates/stm32f3-discovery)
+[![crates.io](https://img.shields.io/crates/v/stm32f3-discovery.svg)](https://crates.io/crates/stm32f3-discovery)
+[![docs.rs](https://docs.rs/stm32f3-discovery/badge.svg)](https://docs.rs/stm32f3-discovery)
+
 ## Dependencies
 
 To build embedded programs using this you'll need:
