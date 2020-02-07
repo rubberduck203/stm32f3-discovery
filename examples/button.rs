@@ -11,7 +11,7 @@ use stm32f3_discovery::stm32;
 use stm32f3_discovery::button::hal::Button;
 use stm32f3_discovery::button::UserButton;
 
-use switch_hal::output::OutputSwitch;
+use switch_hal::OutputSwitch;
 
 #[entry]
 fn main() -> ! {

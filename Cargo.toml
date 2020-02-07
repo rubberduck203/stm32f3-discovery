@@ -24,7 +24,7 @@ default-target = "x86_64-unknown-linux-gnu"
 [dependencies]
 cortex-m = "0.6.2"
 cortex-m-rt = "0.6.12"
-switch-hal = "0.2.0"
+switch-hal = "0.3.0"
 # switch-hal = { git = "https://github.com/rubberduck203/switch-hal", branch = "master" }
 
 # For the stm32f303vc mcu
