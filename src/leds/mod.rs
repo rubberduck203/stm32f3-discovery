@@ -1,7 +1,7 @@
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
 
-use switch_hal::output::{ActiveHigh, Switch, OutputSwitch};
+use switch_hal::{ActiveHigh, Switch, OutputSwitch};
 
 /// GpioE after Led pins (PE8-PE15) have been moved
 /// If you intend to use those pins for other functions, DO NOT call Leds::init().

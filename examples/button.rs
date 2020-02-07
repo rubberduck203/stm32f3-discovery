@@ -8,10 +8,10 @@ use stm32f3_discovery::delay::Delay;
 use stm32f3_discovery::prelude::*;
 use stm32f3_discovery::stm32;
 
-use stm32f3_discovery::button::hal::Button;
+use switch_hal::{InputSwitch};
 use stm32f3_discovery::button::UserButton;
 
-use switch_hal::output::OutputSwitch;
+use switch_hal::OutputSwitch;
 
 #[entry]
 fn main() -> ! {
@@ -35,7 +35,7 @@ fn main() -> ! {
     loop {
         delay.delay_ms(50u16);
 
-        match button.is_pressed() {
+        match button.is_active() {
             Ok(true) => {
                 status_led.on().ok();
             }

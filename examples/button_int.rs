@@ -12,7 +12,7 @@ use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
 use stm32f3_discovery::interrupt;
 
-use switch_hal::output::ToggleableOutputSwitch;
+use switch_hal::ToggleableOutputSwitch;
 
 static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 
