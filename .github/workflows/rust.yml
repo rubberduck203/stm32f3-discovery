@@ -1,15 +1,22 @@
 name: Rust
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - 1.31.0
     steps:
     - uses: actions/checkout@v1
     - name: Install ARM toolchain
