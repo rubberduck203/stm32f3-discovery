@@ -13,7 +13,7 @@
             "name": "Debug Example",
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
-            "preLaunchTask": "build-examples",
+            "preLaunchTask": "cargo build --examples",
             "runToMain": true,
             "executable": "./target/thumbv7em-none-eabihf/debug/examples/${fileBasenameNoExtension}",
             "preLaunchCommands": ["break rust_begin_unwind"],
