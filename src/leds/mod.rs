@@ -1,3 +1,4 @@
+//! Provides access to User LEDs LD3-LD10
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
 
@@ -29,13 +30,21 @@ pub struct GpioE {
 }
 
 pub struct Leds {
+    /// North
     pub ld3: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// NorthWest
     pub ld4: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// NorthEast
     pub ld5: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// West
     pub ld6: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// East
     pub ld7: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// SouthWest
     pub ld8: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// SouthEast
     pub ld9: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    /// South
     pub ld10: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
 }
 
