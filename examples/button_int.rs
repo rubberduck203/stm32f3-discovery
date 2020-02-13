@@ -42,5 +42,8 @@ fn main() -> ! {
         if USER_BUTTON_PRESSED.swap(false, Ordering::AcqRel) {
             status_led.toggle().ok();
         }
+
+        // wait for interrupt (sleep)
+        cortex_m::asm::wfi();
     }
 }
