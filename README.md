@@ -58,3 +58,14 @@ dual licensed as above, without any additional terms or conditions.
 [stm32f3discovery]: https://www.st.com/en/evaluation-tools/stm32f3discovery.html#
 [book]: https://rust-embedded.github.io/book
 [discovery-book]: https://rust-embedded.github.io/discovery/
+
+## Changelog
+
+### 0.3.3
+
+- Add `wait_for_interrupt` function
+- Upgrade `switch-hal` version
+
+### 0.3.2
+
+- Re-export `lsm303dhlc` driver
