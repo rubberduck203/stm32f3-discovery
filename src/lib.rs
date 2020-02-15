@@ -6,3 +6,8 @@ pub use lsm303dlhc;
 
 pub mod button;
 pub mod leds;
+
+/// Signals the process to go into low power mode until an interrupt occurs
+pub fn wait_for_interrupt() {
+    cortex_m::asm::wfi()
+}

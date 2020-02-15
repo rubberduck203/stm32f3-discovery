@@ -2,7 +2,7 @@
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Floating, Input, Output, PushPull};
 
-use switch_hal::{ActiveHigh, Switch, OutputSwitch};
+use switch_hal::{IntoSwitch, ActiveHigh, Switch, OutputSwitch};
 
 /// GpioE after Led pins (PE8-PE15) have been moved
 /// If you intend to use those pins for other functions, DO NOT call Leds::init().
@@ -59,54 +59,46 @@ impl Leds {
     /// You'll have to initialize the pins yourself.
     pub fn init(mut gpioe: gpioe::Parts) -> (Self, GpioE) {
         let mut leds = Leds {
-            ld3: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe9
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld4: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe8
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld5: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe10
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld6: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe15
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld7: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe11
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld8: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe14
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld9: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe12
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
-            ld10: Switch::<_, ActiveHigh>::new(
-                gpioe
-                    .pe13
-                    .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
-                    .downgrade(),
-            ),
+            ld3: gpioe
+                .pe9
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld4: gpioe
+                .pe8
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld5: gpioe
+                .pe10
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld6: gpioe
+                .pe15
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld7: gpioe
+                .pe11
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld8: gpioe
+                .pe14
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld9: gpioe
+                .pe12
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld10: gpioe
+                .pe13
+                .into_push_pull_output(&mut gpioe.moder, &mut gpioe.otyper)
+                .downgrade()
+                .into_active_high_switch(),
         };
 
         //TODO: expose an iterator

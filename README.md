@@ -11,9 +11,7 @@ Board support package for the [STM32F3DISCOVERY][stm32f3discovery] board.
 
 To build embedded programs using this you'll need:
 
-- Rust 1.31, 1.30-beta, nightly-2018-09-13 or a newer toolchain. e.g. `rustup
-  default beta`
-
+- Rust 1.31 or newer toolchain
 - `rust-std` components (pre-compiled `core` crate) for the ARM Cortex-M
   target.
 
@@ -26,13 +24,13 @@ For more info on working with embedded Rust, see the [Embedded Rust Book][book] 
 
 ## Documentation
 
-This crate currently re-exports all of `stm32f3xx-hal`,
-so the [docs.rs documentation](https://docs.rs/stm32f3-discovery) is a bit cluttered with that information.
+https://docs.rs/stm32f3-discovery
 
 For the board specific functionality this crate adds, see:
  - The [examples directory](./examples).
  - The [leds module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/leds/index.html)
  - The [button module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/button/index.html)
+ - The [lsm303dhlc documentation](https://docs.rs/lsm303dlhc/0.2.0/lsm303dlhc/)
 
 ## VS Code
 

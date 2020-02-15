@@ -10,7 +10,7 @@ categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
 maintenance = { status = "experimental" }
-version = "0.3.2"
+version = "0.3.3"
 exclude = [
     ".vscode/*",
 ]
@@ -24,7 +24,7 @@ default-target = "x86_64-unknown-linux-gnu"
 [dependencies]
 cortex-m = "0.6.2"
 cortex-m-rt = "0.6.12"
-switch-hal = "0.3.0"
+switch-hal = "0.3.2"
 # switch-hal = { git = "https://github.com/rubberduck203/switch-hal", branch = "master" }
 lsm303dlhc = "0.2.0"
 

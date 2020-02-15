@@ -7,14 +7,12 @@ use cortex_m_rt::{entry, exception};
 use cortex_m::iprintln;
 use cortex_m::peripheral::syst::SystClkSource;
 
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
-use stm32f3_discovery::stm32f3xx_hal::stm32;
-
 use stm32f3xx_hal::i2c::I2c;
 
-use stm32f3_discovery::switch_hal::{OutputSwitch, ToggleableOutputSwitch};
-use stm32f3_discovery::leds::Leds;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
+use stm32f3_discovery::stm32f3xx_hal::stm32;
 use stm32f3_discovery::lsm303dlhc::Lsm303dlhc;
+use stm32f3_discovery::wait_for_interrupt;
 
 #[entry]
 fn main() -> ! {
@@ -31,10 +29,6 @@ fn main() -> ! {
     syst.set_reload(8_000_000); // period = 1s
     syst.enable_counter();
     syst.enable_interrupt();
-
-    // initialize user leds
-    let gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
-    let (_leds, _gpioe) = Leds::init(gpioe);
 
     // setup ITM output
     let stim = &mut core_periphs.ITM.stim[0];
@@ -62,10 +56,6 @@ fn main() -> ! {
 
         wait_for_interrupt();
     }
-}
-
-fn wait_for_interrupt() {
-    cortex_m::asm::wfi()
 }
 
 #[exception]

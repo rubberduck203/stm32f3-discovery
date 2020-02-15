@@ -1,7 +1,7 @@
 //! Provides access to the user button on PA0
 pub mod interrupt;
 
-use switch_hal::{ActiveHigh, InputSwitch, Switch};
+use switch_hal::{IntoSwitch, ActiveHigh, InputSwitch, Switch};
 use stm32f3xx_hal::gpio::gpioa::PA0;
 use stm32f3xx_hal::gpio::{Floating, Input};
 
@@ -14,7 +14,7 @@ impl UserButton {
     /// It's impossible to construct this button with the wrong pin or pin state.
     /// It's also impossible to construct more than one `UserButton` instance because `gpioa.pa0` is moved upon construction.
     pub fn new(pa0: PA0<Input<Floating>>) -> Self {
-        UserButton(Switch::<_, ActiveHigh>::new(pa0))
+        UserButton(pa0.into_active_high_switch())
     }
 }
 
