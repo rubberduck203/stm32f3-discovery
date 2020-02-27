@@ -1,9 +1,9 @@
 //! Provides access to the user button on PA0
 pub mod interrupt;
 
-use switch_hal::{IntoSwitch, ActiveHigh, InputSwitch, Switch};
 use stm32f3xx_hal::gpio::gpioa::PA0;
 use stm32f3xx_hal::gpio::{Floating, Input};
+use switch_hal::{ActiveHigh, InputSwitch, IntoSwitch, Switch};
 
 /// Wrapper struct around `ActiveHighButton<PA0<Input<Floating>>>`
 /// The user button has an external pull down resistor and low pass filter circuit.
