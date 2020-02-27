@@ -7,10 +7,7 @@ use cortex_m::iprintln;
 use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m_rt::{entry, exception};
 
-use stm32f3xx_hal::i2c::I2c;
-
 use stm32f3_discovery::compass::Compass;
-use stm32f3_discovery::lsm303dlhc::Lsm303dlhc;
 use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::stm32;
 use stm32f3_discovery::wait_for_interrupt;

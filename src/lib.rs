@@ -33,14 +33,14 @@ pub mod compass {
         pub fn new<Pb6Mode, Pb7Mode>(
             pb6: gpiob::PB6<Pb6Mode>,
             pb7: gpiob::PB7<Pb7Mode>,
-            moder: &mut gpiob::MODER,
-            afrl: &mut gpiob::AFRL,
+            mode: &mut gpiob::MODER,
+            alternate_function_low: &mut gpiob::AFRL,
             i2c1: stm32::I2C1,
             clocks: rcc::Clocks,
             advanced_periph_bus: &mut rcc::APB1,
         ) -> Result<Self, stm32f3xx_hal::i2c::Error> {
-            let scl = pb6.into_af4(moder, afrl);
-            let sda = pb7.into_af4(moder, afrl);
+            let scl = pb6.into_af4(mode, alternate_function_low);
+            let sda = pb7.into_af4(mode, alternate_function_low);
             let i2c = i2c::I2c::i2c1(i2c1, (scl, sda), 400.khz(), clocks, advanced_periph_bus);
 
             let lsm303dhlc = Lsm303::new(i2c)?;
