@@ -15,15 +15,15 @@ use stm32f3_discovery::switch_hal::OutputSwitch;
 #[entry]
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
-    let mut reset_control_clock = device_periphs.RCC.constrain();
+    let mut reset_and_clock_control = device_periphs.RCC.constrain();
 
     let core_periphs = cortex_m::Peripherals::take().unwrap();
     let mut flash = device_periphs.FLASH.constrain();
-    let clocks = reset_control_clock.cfgr.freeze(&mut flash.acr);
+    let clocks = reset_and_clock_control.cfgr.freeze(&mut flash.acr);
     let mut delay = Delay::new(core_periphs.SYST, clocks);
 
     // initialize user leds
-    let mut gpioe = device_periphs.GPIOE.split(&mut reset_control_clock.ahb);
+    let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
     let leds = Leds::new(
         gpioe.pe8,
         gpioe.pe9,

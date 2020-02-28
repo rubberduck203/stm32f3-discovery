@@ -16,11 +16,11 @@ use stm32f3_discovery::wait_for_interrupt;
 #[entry]
 fn main() -> ! {
     let device_periphs = stm32::Peripherals::take().unwrap();
-    let mut reset_control_clock = device_periphs.RCC.constrain();
+    let mut reset_and_clock_control = device_periphs.RCC.constrain();
 
     let mut core_periphs = cortex_m::Peripherals::take().unwrap();
     let mut flash = device_periphs.FLASH.constrain();
-    let clocks = reset_control_clock.cfgr.freeze(&mut flash.acr);
+    let clocks = reset_and_clock_control.cfgr.freeze(&mut flash.acr);
 
     // setup 1 second systick
     let mut syst = core_periphs.SYST;
@@ -32,7 +32,7 @@ fn main() -> ! {
     // setup ITM output
     let stim = &mut core_periphs.ITM.stim[0];
 
-    let mut gpiob = device_periphs.GPIOB.split(&mut reset_control_clock.ahb);
+    let mut gpiob = device_periphs.GPIOB.split(&mut reset_and_clock_control.ahb);
 
     // new lsm303 driver uses continuous mode, so no need wait for interrupts on DRDY
     let mut compass = Compass::new(
@@ -42,7 +42,7 @@ fn main() -> ! {
         &mut gpiob.afrl,
         device_periphs.I2C1,
         clocks,
-        &mut reset_control_clock.apb1,
+        &mut reset_and_clock_control.apb1,
     )
     .unwrap();
 
