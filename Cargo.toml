@@ -27,6 +27,7 @@ cortex-m-rt = "0.6.12"
 switch-hal = "0.3.2"
 # switch-hal = { git = "https://github.com/rubberduck203/switch-hal", branch = "master" }
 lsm303dlhc = "0.2.0"
+accelerometer = "0.11.0"
 
 # For the stm32f303vc mcu
 [dependencies.stm32f3xx-hal]

@@ -7,6 +7,7 @@ use cortex_m::iprintln;
 use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m_rt::{entry, exception};
 
+use stm32f3_discovery::accelerometer::RawAccelerometer;
 use stm32f3_discovery::compass::Compass;
 use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::stm32;
@@ -31,32 +32,23 @@ fn main() -> ! {
     // setup ITM output
     let stim = &mut core_periphs.ITM.stim[0];
 
-    /*
-     * PB6 -> SCL (clock)
-     * PB7 -> SDA (data)
-     * PE2 -> DRDY (magnometer data ready)
-     * PE4 -> INT1 (configurable interrupt 1)
-     * PE5 -> INT2 (configurable interrupt 2)
-     */
     let mut gpiob = device_periphs.GPIOB.split(&mut reset_control_clock.ahb);
 
     // new lsm303 driver uses continuous mode, so no need wait for interrupts on DRDY
-    let compass = Compass::new(
+    let mut compass = Compass::new(
         gpiob.pb6,
         gpiob.pb7,
         &mut gpiob.moder,
         &mut gpiob.afrl,
         device_periphs.I2C1,
         clocks,
-        &mut reset_control_clock.apb1
-    ).unwrap();
-
-    let mut lsm303dlhc = compass.lsm303dlhc;
+        &mut reset_control_clock.apb1,
+    )
+    .unwrap();
 
     loop {
-        let accel = lsm303dlhc.accel().unwrap();
-        let mag = lsm303dlhc.mag().unwrap();
-
+        let accel = compass.accel_raw().unwrap();
+        let mag = compass.mag_raw().unwrap();
         iprintln!(stim, "Accel:{:?}; Mag:{:?}", accel, mag);
 
         wait_for_interrupt();
