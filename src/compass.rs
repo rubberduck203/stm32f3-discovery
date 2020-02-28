@@ -16,6 +16,7 @@ pub struct Compass {
 }
 
 impl Compass {
+    /// Initialize the onboard Lsm303dhlc e-Compass
     pub fn new<Pb6Mode, Pb7Mode>(
         pb6: gpiob::PB6<Pb6Mode>,
         pb7: gpiob::PB7<Pb7Mode>,
@@ -44,15 +45,22 @@ impl Compass {
         })
     }
 
+    /// Read the raw magnetometer data
     pub fn mag_raw(&mut self) -> Result<I16x3, i2c::Error> {
         let reading = self.lsm303dlhc.mag()?;
         Ok(I16x3::new(reading.x, reading.y, reading.z))
+    }
+
+    /// Consume the Compass and return the underlying Lsm303dhlc
+    pub fn into_lsm303dlhc(self) -> Lsm303 {
+        self.lsm303dlhc
     }
 }
 
 impl RawAccelerometer<I16x3> for Compass {
     type Error = i2c::Error;
 
+    /// Read the raw accelerometer data
     fn accel_raw(&mut self) -> Result<I16x3, accelerometer::Error<Self::Error>> {
         let reading = self.lsm303dlhc.accel()?;
         Ok(I16x3::new(reading.x, reading.y, reading.z))
