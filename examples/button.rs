@@ -23,8 +23,19 @@ fn main() -> ! {
     let mut delay = Delay::new(core_periphs.SYST, clocks);
 
     // initialize user leds
-    let gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
-    let (leds, _gpioe) = Leds::init(gpioe);
+    let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
+    let leds = Leds::new(
+        gpioe.pe8,
+        gpioe.pe9,
+        gpioe.pe10,
+        gpioe.pe11,
+        gpioe.pe12,
+        gpioe.pe13,
+        gpioe.pe14,
+        gpioe.pe15,
+        &mut gpioe.moder,
+        &mut gpioe.otyper,
+    );
     let mut status_led = leds.ld3;
 
     // initialize user button

@@ -28,9 +28,9 @@ https://docs.rs/stm32f3-discovery
 
 For the board specific functionality this crate adds, see:
  - The [examples directory](./examples).
- - The [leds module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/leds/index.html)
- - The [button module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/button/index.html)
- - The compass module and [lsm303dhlc documentation](https://docs.rs/lsm303dlhc/0.2.0/lsm303dlhc/)
+ - The [leds module documentation](https://docs.rs/stm32f3-discovery/0.3.4/stm32f3_discovery/leds/index.html)
+ - The [button module documentation](https://docs.rs/stm32f3-discovery/0.3.4/stm32f3_discovery/button/index.html)
+ - The [compass module](https://docs.rs/stm32f3-discovery/0.3.4/stm32f3_discovery/compass/index.html) and [lsm303dhlc documentation](https://docs.rs/lsm303dlhc/0.2.0/lsm303dlhc/)
 
 ## VS Code
 
@@ -61,9 +61,10 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
-### Next
+### 0.3.4
 
 - Introduced `Compass` struct and implemented [Accelerometer trait](https://crates.io/crates/accelerometer).
+- Add `Leds::new` function and deprecate `Leds::init`.
 
 ### 0.3.3
 

@@ -7,6 +7,7 @@ use switch_hal::{ActiveHigh, IntoSwitch, OutputSwitch, Switch};
 /// GpioE after Led pins (PE8-PE15) have been moved
 /// If you intend to use those pins for other functions, DO NOT call Leds::init().
 /// You'll have to initialize the pins yourself.
+#[deprecated(since = "0.3.4", note = "Will be removed in 0.4.0")]
 pub struct GpioE {
     /// Opaque AFRH register
     pub afrh: gpioe::AFRH,
@@ -57,6 +58,7 @@ impl Leds {
     ///
     /// **If you intend to use those pins for other functions, DO NOT call Leds::init().**
     /// You'll have to initialize the pins yourself.
+    #[deprecated(since = "0.3.4", note = "Will be removed in 0.4.0. Use `new` instead.")]
     pub fn init(mut gpioe: gpioe::Parts) -> (Self, GpioE) {
         let mut leds = Leds {
             ld3: gpioe
@@ -129,6 +131,67 @@ impl Leds {
                 pe7: gpioe.pe7,
             },
         )
+    }
+
+    /// Initializes the user LEDs to OFF
+    pub fn new<PE8Mode, PE9Mode, PE10Mode, PE11Mode, PE12Mode, PE13Mode, PE14Mode, PE15Mode>(
+        pe8: gpioe::PE8<PE8Mode>,
+        pe9: gpioe::PE9<PE9Mode>,
+        pe10: gpioe::PE10<PE10Mode>,
+        pe11: gpioe::PE11<PE11Mode>,
+        pe12: gpioe::PE12<PE12Mode>,
+        pe13: gpioe::PE13<PE13Mode>,
+        pe14: gpioe::PE14<PE14Mode>,
+        pe15: gpioe::PE15<PE15Mode>,
+        moder: &mut gpioe::MODER,
+        otyper: &mut gpioe::OTYPER,
+    ) -> Self {
+        let mut leds = Leds {
+            ld3: pe9
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld4: pe8
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld5: pe10
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld6: pe15
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld7: pe11
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld8: pe14
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld9: pe12
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+            ld10: pe13
+                .into_push_pull_output(moder, otyper)
+                .downgrade()
+                .into_active_high_switch(),
+        };
+
+        //TODO: expose an iterator
+        leds.ld3.off().ok();
+        leds.ld4.off().ok();
+        leds.ld5.off().ok();
+        leds.ld6.off().ok();
+        leds.ld7.off().ok();
+        leds.ld8.off().ok();
+        leds.ld9.off().ok();
+        leds.ld10.off().ok();
+
+        leds
     }
 
     /// Consumes the `Leds` struct and returns an array

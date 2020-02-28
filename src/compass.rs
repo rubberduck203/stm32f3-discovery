@@ -7,9 +7,8 @@ use stm32f3xx_hal::rcc;
 use stm32f3xx_hal::stm32;
 use stm32f3xx_hal::time::U32Ext;
 
-type Lsm303 = lsm303dlhc::Lsm303dlhc<
-    i2c::I2c<stm32::I2C1, (gpiob::PB6<gpio::AF4>, gpiob::PB7<gpio::AF4>)>,
->;
+type Lsm303 =
+    lsm303dlhc::Lsm303dlhc<i2c::I2c<stm32::I2C1, (gpiob::PB6<gpio::AF4>, gpiob::PB7<gpio::AF4>)>>;
 
 pub struct Compass {
     lsm303dlhc: Lsm303,
