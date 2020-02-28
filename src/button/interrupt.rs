@@ -16,10 +16,9 @@ use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
 /// button::interrupt::clear();
 /// ```
 pub fn clear() {
-    const EXTI_PR1: usize = 0x40010414;
-    const PR0: usize = (1 << 0);
     unsafe {
-        core::ptr::write_volatile(EXTI_PR1 as *mut usize, PR0);
+        let exti = &*(stm32f3xx_hal::stm32::EXTI::ptr());
+        &exti.pr1.modify(|_, w| w.pr0().set_bit());
     }
 }
 
