@@ -30,7 +30,7 @@ For the board specific functionality this crate adds, see:
  - The [examples directory](./examples).
  - The [leds module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/leds/index.html)
  - The [button module documentation](https://docs.rs/stm32f3-discovery/0.2.0/stm32f3_discovery/button/index.html)
- - The [lsm303dhlc documentation](https://docs.rs/lsm303dlhc/0.2.0/lsm303dlhc/)
+ - The compass module and [lsm303dhlc documentation](https://docs.rs/lsm303dlhc/0.2.0/lsm303dlhc/)
 
 ## VS Code
 
@@ -60,6 +60,10 @@ dual licensed as above, without any additional terms or conditions.
 [discovery-book]: https://rust-embedded.github.io/discovery/
 
 ## Changelog
+
+### Next
+
+- Introduced `Compass` struct and implemented [Accelerometer trait](https://crates.io/crates/accelerometer).
 
 ### 0.3.3
 
