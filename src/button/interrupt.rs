@@ -17,8 +17,8 @@ use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
 /// ```
 pub fn clear() {
     unsafe {
-        let exti = &*(stm32f3xx_hal::stm32::EXTI::ptr());
-        &exti.pr1.modify(|_, w| w.pr0().set_bit());
+        let exti = &(*stm32f3xx_hal::stm32::EXTI::ptr());
+        exti.pr1.write(|w| w.pr0().set_bit())
     }
 }
 
