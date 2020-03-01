@@ -12,6 +12,7 @@ use stm32f3_discovery::wait_for_interrupt;
 
 use core::sync::atomic::{AtomicBool, Ordering};
 use stm32f3_discovery::button;
+use stm32f3_discovery::button::interrupt::TriggerMode;
 
 use stm32f3_discovery::leds::Leds;
 use stm32f3_discovery::switch_hal::ToggleableOutputSwitch;
@@ -20,10 +21,10 @@ static USER_BUTTON_PRESSED: AtomicBool = AtomicBool::new(false);
 
 #[interrupt]
 fn EXTI0() {
-    // pa0 has a low pass filter on it, so no need to debounce in software
-    USER_BUTTON_PRESSED.store(true, Ordering::Relaxed);
     //If we don't clear the interrupt to signal it's been serviced, it will continue to fire.
     button::interrupt::clear();
+    // pa0 has a low pass filter on it, so no need to debounce in software
+    USER_BUTTON_PRESSED.store(true, Ordering::Relaxed);
 }
 
 #[entry]
@@ -47,7 +48,11 @@ fn main() -> ! {
     );
     let mut status_led = leds.ld3;
 
-    button::interrupt::enable(&device_periphs.EXTI, &device_periphs.SYSCFG);
+    button::interrupt::enable(
+        &device_periphs.EXTI,
+        &device_periphs.SYSCFG,
+        TriggerMode::Rising,
+    );
 
     loop {
         // check to see if flag was active and clear it
