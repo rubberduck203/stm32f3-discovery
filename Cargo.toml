@@ -35,7 +35,7 @@ accelerometer = "0.11.0"
 # For the stm32f303vc mcu
 [dependencies.stm32f3xx-hal]
 features = ["stm32f303xc", "rt"]
-version = "0.4.0"
+version = "0.4.1"
 
 [dev-dependencies]
 panic-halt = "0.2.0"
