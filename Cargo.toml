@@ -15,6 +15,9 @@ exclude = [
     ".vscode/*",
 ]
 
+[badges]
+maintenance = { status = "actively-developed" }
+
 [package.metadata.docs.rs]
 # thumbv7m-none-eabi is not a supported target on docs.rs,
 # however the target is not relevant for docs.
