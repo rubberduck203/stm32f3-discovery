@@ -61,6 +61,12 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.4.0
+
+- Updated `stm32f3xx-hal` from 0.4.0 to 0.4.1
+- Allows setting `TriggerMode` on the user button (breaking change)
+- Removes deprecated `GpioE` struct and `Leds::init` function
+
 ### 0.3.4
 
 - Introduced `Compass` struct and implemented [Accelerometer trait](https://crates.io/crates/accelerometer).
