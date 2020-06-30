@@ -1,3 +1,11 @@
+//! The three LEDs should gradually light up corresponding to the orientation of the board along its three axes
+//! (or more precisely they indicate the direction of Earth's gravity relative to the three axes of the board):
+//!
+//!  - Lying down flat the blue LDE should be full on, indicating that gravity is perpendicular to the board.
+//!  - @hen you slowly turn it around its long axis the green LED should gradually go on while the blue gradually fades out.
+//!    The green LED should be fully on when the green LED is 'facing down' and the other axes are straight.
+//!  - Likewise when you turn it along the short axis (from a flat position) the red LED will go on.
+
 #![deny(unsafe_code)]
 #![no_std]
 #![no_main]
