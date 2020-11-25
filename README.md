@@ -61,6 +61,11 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.5.0
+
+- Updated dependencies
+- `InputSwitch for UserButton` now has an `Error` type of `core::convert::Infallible` instead of `()`
+
 ### 0.4.0
 
 - Updated `stm32f3xx-hal` from 0.4.0 to 0.4.1

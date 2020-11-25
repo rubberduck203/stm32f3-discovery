@@ -19,7 +19,7 @@ impl UserButton {
 }
 
 impl InputSwitch for UserButton {
-    type Error = ();
+    type Error = core::convert::Infallible;
     fn is_active(&self) -> Result<bool, Self::Error> {
         self.0.is_active()
     }
