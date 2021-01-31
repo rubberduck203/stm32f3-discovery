@@ -36,7 +36,7 @@ impl Compass {
          */
         let scl = pb6.into_af4(mode, alternate_function_low);
         let sda = pb7.into_af4(mode, alternate_function_low);
-        let i2c = i2c::I2c::i2c1(i2c1, (scl, sda), 400.khz(), clocks, advanced_periph_bus);
+        let i2c = i2c::I2c::new(i2c1, (scl, sda), 400.khz(), clocks, advanced_periph_bus);
 
         let lsm303dhlc = Lsm303::new(i2c)?;
         Ok(Compass {
