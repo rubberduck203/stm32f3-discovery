@@ -61,6 +61,14 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.6.0
+
+Update `stm32f3xx-hal` version.  
+`stm32f3xx-hal` had breaking changes.  
+Since we re-export the HAL, that means we also had breaking changes.
+
+For details, see the [stm32f3xx-hal changelog](https://github.com/stm32-rs/stm32f3xx-hal/blob/HEAD/CHANGELOG.md#breaking-changes).
+
 ### 0.5.0
 
 - Updated dependencies
