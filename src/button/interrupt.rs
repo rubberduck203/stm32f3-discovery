@@ -1,8 +1,8 @@
 //! Provides interrupt features for `UserButton` on PA0 for the board
 use cortex_m::peripheral::NVIC;
-use stm32f3xx_hal::stm32::exti::{FTSR1, IMR1, RTSR1};
-use stm32f3xx_hal::stm32::syscfg::EXTICR1;
-use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
+use stm32f3xx_hal::pac::exti::{FTSR1, IMR1, RTSR1};
+use stm32f3xx_hal::pac::syscfg::EXTICR1;
+use stm32f3xx_hal::pac::{Interrupt, EXTI, SYSCFG};
 
 /// Used to clear the external interrupt pending register for the user button without moving the EXTI peripheral into global static state.
 ///
@@ -20,7 +20,7 @@ use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
 /// ```
 pub fn clear() {
     unsafe {
-        let exti = &(*stm32f3xx_hal::stm32::EXTI::ptr());
+        let exti = &(*stm32f3xx_hal::pac::EXTI::ptr());
         exti.pr1.write(|w| w.pr0().set_bit())
     }
 }
@@ -36,7 +36,7 @@ pub enum TriggerMode {
 /// # Example
 ///
 /// ```
-/// let device_periphs = stm32::Peripherals::take().unwrap();
+/// let device_periphs = pac::Peripherals::take().unwrap();
 /// button::interrupt::enable(&device_periphs.EXTI, &device_periphs.SYSCFG, TriggerMode::Rising);
 /// ```
 pub fn enable(external_interrupts: &EXTI, sysconfig: &SYSCFG, mode: TriggerMode) {

@@ -18,11 +18,11 @@ use stm32f3_discovery::compass::Compass;
 use stm32f3_discovery::stm32f3xx_hal;
 use stm32f3xx_hal::delay::Delay;
 use stm32f3xx_hal::pwm::tim1;
-use stm32f3xx_hal::{prelude::*, stm32};
+use stm32f3xx_hal::{prelude::*, pac};
 
 #[entry]
 fn main() -> ! {
-    let device_periphs = stm32::Peripherals::take().unwrap();
+    let device_periphs = pac::Peripherals::take().unwrap();
     let mut reset_and_clock_control = device_periphs.RCC.constrain();
     let core_periphs = cortex_m::Peripherals::take().unwrap();
     // Configure our clocks
@@ -35,16 +35,16 @@ fn main() -> ! {
     // Prep the pins we need in their correct alternate function
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
 
-    let led_blue = gpioe.pe8.into_af2(&mut gpioe.moder, &mut gpioe.afrh);
-    let led_green = gpioe.pe11.into_af2(&mut gpioe.moder, &mut gpioe.afrh);
-    let lef_red = gpioe.pe13.into_af2(&mut gpioe.moder, &mut gpioe.afrh);
+    let led_blue = gpioe.pe8.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let led_green = gpioe.pe11.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let lef_red = gpioe.pe13.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
 
     let max_duty = 4096;
 
     let tim1_channels = tim1(
         device_periphs.TIM1,
         max_duty, // resolution of duty cycle
-        500.hz(), // frequency of period
+        500.Hz(), // frequency of period
         &clocks,  // To get the timer's clock speed
     );
 
@@ -64,6 +64,7 @@ fn main() -> ! {
         gpiob.pb6,
         gpiob.pb7,
         &mut gpiob.moder,
+        &mut gpiob.otyper,
         &mut gpiob.afrl,
         device_periphs.I2C1,
         clocks,
