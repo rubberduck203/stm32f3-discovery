@@ -14,8 +14,9 @@ use stm32f3xx_hal::stm32::{Interrupt, EXTI, SYSCFG};
 /// ```
 /// #[interrupt]
 /// fn EXTI0() {
-/// // If we don't clear the interrupt to signal it's been serviced, it will continue to fire.
-/// button::interrupt::clear();
+///     // If we don't clear the interrupt to signal it's been serviced, it will continue to fire.
+///     button::interrupt::clear();
+/// }
 /// ```
 pub fn clear() {
     unsafe {
