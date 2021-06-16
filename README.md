@@ -61,6 +61,10 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.6.1
+
+Update `cortex-m`, `cortex-m-rt`, and `switch-hal` dependencies.
+
 ### 0.6.0
 
 Update `stm32f3xx-hal` version.  

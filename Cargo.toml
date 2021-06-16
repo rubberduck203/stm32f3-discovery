@@ -9,7 +9,7 @@ documentation = "https://docs.rs/crate/stm32f3-discovery"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
-version = "0.6.0"
+version = "0.6.1"
 exclude = [
     ".vscode/*",
 ]
@@ -22,9 +22,9 @@ default-target = "thumbv7em-none-eabihf"
 targets = [] # build only default target for docs
 
 [dependencies]
-cortex-m = "0.6.4"
-cortex-m-rt = "0.6.13"
-switch-hal = "0.3.2"
+cortex-m = "0.7.2"
+cortex-m-rt = "0.6.14"
+switch-hal = "0.4.0"
 # switch-hal = { git = "https://github.com/rubberduck203/switch-hal", branch = "master" }
 lsm303dlhc = "0.2.0"
 accelerometer = "0.12.0"
