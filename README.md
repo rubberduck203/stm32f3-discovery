@@ -11,7 +11,7 @@ Board support package for the [STM32F3DISCOVERY][stm32f3discovery] board.
 
 To build embedded programs using this you'll need:
 
-- Rust 1.31 or newer toolchain
+- Rust 1.51 or newer toolchain
 - `rust-std` components (pre-compiled `core` crate) for the ARM Cortex-M
   target.
 
@@ -60,6 +60,15 @@ dual licensed as above, without any additional terms or conditions.
 [discovery-book]: https://rust-embedded.github.io/discovery/
 
 ## Changelog
+
+### 0.7.0
+
+Updates `stm32f3xx-hal` to 0.7.0.
+Since we re-export the `stm32f3xx-hal`, any breaking changes in their API are also breaking changes in ours.
+For details see the [stm32f3xx-hal changelog](https://github.com/stm32-rs/stm32f3xx-hal/blob/66c0d21ae19ae0bee09ec834a6c9c90b2191e17d/CHANGELOG.md#breaking-changes)
+
+
+Although the minimum Rust version is technically still 1.49, because of changes to `embedded_time`, the minimum version of Cargo is now 1.51, so we're updating our MSRV to 1.51.
 
 ### 0.6.1
 
