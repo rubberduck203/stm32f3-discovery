@@ -7,7 +7,7 @@ use cortex_m_rt::entry;
 
 use stm32f3_discovery::stm32f3xx_hal::interrupt;
 use stm32f3_discovery::stm32f3xx_hal::prelude::*;
-use stm32f3_discovery::stm32f3xx_hal::stm32;
+use stm32f3_discovery::stm32f3xx_hal::pac;
 use stm32f3_discovery::wait_for_interrupt;
 
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -29,7 +29,7 @@ fn EXTI0() {
 
 #[entry]
 fn main() -> ! {
-    let device_periphs = stm32::Peripherals::take().unwrap();
+    let device_periphs = pac::Peripherals::take().unwrap();
     let mut reset_and_clock_control = device_periphs.RCC.constrain();
 
     // initialize user leds

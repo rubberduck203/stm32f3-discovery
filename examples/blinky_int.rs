@@ -12,16 +12,16 @@ use cortex_m_rt::entry;
 
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::timer::{Event, Timer};
-use stm32f3xx_hal::stm32;
+use stm32f3xx_hal::pac;
 
-use stm32::{interrupt, Interrupt};
+use pac::{interrupt, Interrupt};
 
 use switch_hal::{ToggleableOutputSwitch, IntoSwitch};
 
 use stm32f3_discovery::wait_for_interrupt;
 
 
-static TIM: Mutex<RefCell<Option<Timer<stm32::TIM7>>>> = Mutex::new(RefCell::new(None));
+static TIM: Mutex<RefCell<Option<Timer<pac::TIM7>>>> = Mutex::new(RefCell::new(None));
 
 #[interrupt]
 fn TIM7() {
@@ -34,12 +34,12 @@ fn TIM7() {
 
 #[entry]
 fn main() -> ! {
-    let peripherals = stm32f3xx_hal::stm32::Peripherals::take().unwrap();
+    let peripherals = stm32f3xx_hal::pac::Peripherals::take().unwrap();
     let mut flash = peripherals.FLASH.constrain();
     let mut rcc = peripherals.RCC.constrain();
 
     let clocks = rcc.cfgr.freeze(&mut flash.acr);
-    let mut timer = Timer::tim7(peripherals.TIM7, 2.hz(), clocks, &mut rcc.apb1);
+    let mut timer = Timer::tim7(peripherals.TIM7, 2.Hz(), clocks, &mut rcc.apb1);
     timer.listen(Event::Update);
     free(|cs| {
         TIM.borrow(cs).replace(Some(timer));
@@ -50,7 +50,7 @@ fn main() -> ! {
     let mut led = pin.into_active_high_switch();
 
     unsafe {
-       stm32::NVIC::unmask(Interrupt::TIM7);
+       pac::NVIC::unmask(Interrupt::TIM7);
     }    
     
     loop {

@@ -10,12 +10,12 @@ use cortex_m_rt::{entry, exception};
 use stm32f3_discovery::accelerometer::RawAccelerometer;
 use stm32f3_discovery::compass::Compass;
 use stm32f3_discovery::stm32f3xx_hal::prelude::*;
-use stm32f3_discovery::stm32f3xx_hal::stm32;
+use stm32f3_discovery::stm32f3xx_hal::pac;
 use stm32f3_discovery::wait_for_interrupt;
 
 #[entry]
 fn main() -> ! {
-    let device_periphs = stm32::Peripherals::take().unwrap();
+    let device_periphs = pac::Peripherals::take().unwrap();
     let mut reset_and_clock_control = device_periphs.RCC.constrain();
 
     let mut core_periphs = cortex_m::Peripherals::take().unwrap();
@@ -39,6 +39,7 @@ fn main() -> ! {
         gpiob.pb6,
         gpiob.pb7,
         &mut gpiob.moder,
+        &mut gpiob.otyper,
         &mut gpiob.afrl,
         device_periphs.I2C1,
         clocks,
