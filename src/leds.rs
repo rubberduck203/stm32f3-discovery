@@ -4,6 +4,20 @@ use stm32f3xx_hal::gpio::{Output, PushPull};
 
 use switch_hal::{ActiveHigh, IntoSwitch, OutputSwitch, Switch};
 
+/// LED compass direction as noted on the board
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum Direction
+{
+    North,
+    NorthEast,
+    East,
+    SouthEast,
+    South,
+    SouthWest,
+    West,
+    NorthWest,
+}
+
 pub struct Leds {
     /// North
     pub ld3: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
@@ -83,6 +97,20 @@ impl Leds {
         leds.ld10.off().ok();
 
         leds
+    }
+
+    /// Mutably borrow a LED by the given direction (as noted on the board)
+    pub fn for_direction(&mut self, direction: Direction) -> &mut Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh> {
+        match direction {
+            Direction::North => &mut self.ld3,
+            Direction::NorthEast => &mut self.ld5,
+            Direction::East => &mut self.ld7,
+            Direction::SouthEast => &mut self.ld9,
+            Direction::South => &mut self.ld10,
+            Direction::SouthWest => &mut self.ld8,
+            Direction::West => &mut self.ld6,
+            Direction::NorthWest => &mut self.ld4,
+        }
     }
 
     /// Consumes the `Leds` struct and returns an array
