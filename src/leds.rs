@@ -4,6 +4,8 @@ use stm32f3xx_hal::gpio::{Output, PushPull};
 
 use switch_hal::{ActiveHigh, IntoSwitch, OutputSwitch, Switch};
 
+use core::slice::Iter;
+
 /// LED compass direction as noted on the board
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum Direction
@@ -16,6 +18,22 @@ pub enum Direction
     SouthWest,
     West,
     NorthWest,
+}
+
+impl Direction {
+    pub fn iter() -> Iter<'static, Direction> {
+        static DIRECTIONS: [Direction; 8] = [
+            Direction::North,
+            Direction::NorthEast,
+            Direction::East,
+            Direction::SouthEast,
+            Direction::South,
+            Direction::SouthWest,
+            Direction::West,
+            Direction::NorthWest
+        ];
+        DIRECTIONS.iter()
+    }
 }
 
 pub struct Leds {
