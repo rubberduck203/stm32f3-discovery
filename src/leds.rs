@@ -153,6 +153,24 @@ impl Leds {
     }
 }
 
+impl<'a> IntoIterator for &'a Leds {
+    type Item = &'a Led;
+    type IntoIter = LedsIterator<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut Leds {
+    type Item = &'a mut Led;
+    type IntoIter = LedsMutIterator<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
+    }
+}
+
 pub struct LedsIterator<'a> {
     current_index: u8,
     leds: &'a Leds
@@ -180,15 +198,6 @@ impl<'a> Iterator for LedsIterator<'a> {
         };
         self.current_index += 1;
         current
-    }
-}
-
-impl<'a> IntoIterator for &'a Leds {
-    type Item = &'a Led;
-    type IntoIter = LedsIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
     }
 }
 
@@ -223,14 +232,5 @@ impl<'a> Iterator for LedsMutIterator<'a> {
         };
         self.current_index += 1;
         current
-    }
-}
-
-impl<'a> IntoIterator for &'a mut Leds {
-    type Item = &'a mut Led;
-    type IntoIter = LedsMutIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter_mut()
     }
 }
