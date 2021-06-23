@@ -36,23 +36,25 @@ impl Direction {
     }
 }
 
+type Led = Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>;
+
 pub struct Leds {
     /// North
-    pub ld3: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld3: Led,
     /// NorthWest
-    pub ld4: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld4: Led,
     /// NorthEast
-    pub ld5: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld5: Led,
     /// West
-    pub ld6: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld6: Led,
     /// East
-    pub ld7: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld7: Led,
     /// SouthWest
-    pub ld8: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld8: Led,
     /// SouthEast
-    pub ld9: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld9: Led,
     /// South
-    pub ld10: Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>,
+    pub ld10: Led,
 }
 
 impl Leds {
@@ -118,7 +120,7 @@ impl Leds {
     }
 
     /// Mutably borrow a LED by the given direction (as noted on the board)
-    pub fn for_direction(&mut self, direction: Direction) -> &mut Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh> {
+    pub fn for_direction(&mut self, direction: Direction) -> &mut Led {
         match direction {
             Direction::North => &mut self.ld3,
             Direction::NorthEast => &mut self.ld5,
@@ -134,7 +136,7 @@ impl Leds {
     /// Consumes the `Leds` struct and returns an array
     /// where index 0 is N and each incrementing index
     /// rotates clockwise around the compass
-    pub fn into_array(self) -> [Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>; 8] {
+    pub fn into_array(self) -> [Led; 8] {
         [
             self.ld3,  //N
             self.ld5,  //NE
