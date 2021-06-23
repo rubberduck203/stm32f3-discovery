@@ -172,13 +172,22 @@ impl<'a> IntoIterator for &'a mut Leds {
 }
 
 pub struct LedsIterator<'a> {
-    current_index: u8,
+    current_index: usize,
     leds: &'a Leds
 }
 
 impl<'a> LedsIterator<'a> {
     fn new(leds: &'a Leds) -> Self {
         LedsIterator { current_index: 0, leds }
+    }
+
+    fn len(&self) -> usize {
+        ITERATOR_SIZE - self.current_index
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let length = self.len();
+        (length, Some(length))
     }
 }
 
@@ -199,16 +208,38 @@ impl<'a> Iterator for LedsIterator<'a> {
         self.current_index += 1;
         current
     }
+
+    // Because we implement ExactSizedIterator, we need to ensure size_hint returns the right length
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.size_hint()
+    }
+}
+
+const ITERATOR_SIZE: usize = 8;
+
+impl<'a> ExactSizeIterator for LedsIterator<'a> {
+    fn len(&self) -> usize {
+        self.len()
+    }
 }
 
 pub struct LedsMutIterator<'a> {
-    current_index: u8,
+    current_index: usize,
     leds: &'a mut Leds
 }
 
 impl<'a> LedsMutIterator<'a> {
     fn new(leds: &'a mut Leds) -> Self {
         LedsMutIterator { current_index: 0, leds }
+    }
+
+    fn len(&self) -> usize {
+        ITERATOR_SIZE - self.current_index
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let length = self.len();
+        (length, Some(length))
     }
 }
 
@@ -232,5 +263,16 @@ impl<'a> Iterator for LedsMutIterator<'a> {
         };
         self.current_index += 1;
         current
+    }
+
+    // Because we implement ExactSizedIterator, we need to ensure size_hint returns the right length
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        self.size_hint()
+    }
+}
+
+impl<'a> ExactSizeIterator for LedsMutIterator<'a> {
+    fn len(&self) -> usize {
+        ITERATOR_SIZE - self.current_index
     }
 }
