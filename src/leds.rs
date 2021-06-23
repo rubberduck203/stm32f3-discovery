@@ -5,6 +5,7 @@ use stm32f3xx_hal::gpio::{Output, PushPull};
 use switch_hal::{ActiveHigh, IntoSwitch, OutputSwitch, Switch};
 
 use core::slice::Iter;
+use core::iter::FusedIterator;
 
 /// LED compass direction as noted on the board
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -223,6 +224,9 @@ impl<'a> ExactSizeIterator for LedsIterator<'a> {
     }
 }
 
+///Marker trait that indicates LedsIterator never starts returning Some after returning None
+impl<'a> FusedIterator for LedsIterator<'a> {}
+
 pub struct LedsMutIterator<'a> {
     current_index: usize,
     leds: &'a mut Leds
@@ -276,3 +280,6 @@ impl<'a> ExactSizeIterator for LedsMutIterator<'a> {
         ITERATOR_SIZE - self.current_index
     }
 }
+
+///Marker trait that indicates LedsMutIterator never starts returning Some after returning None
+impl<'a> FusedIterator for LedsMutIterator<'a> {}
