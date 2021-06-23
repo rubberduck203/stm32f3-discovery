@@ -138,6 +138,7 @@ impl Leds {
     /// Consumes the `Leds` struct and returns an array
     /// where index 0 is N and each incrementing index
     /// rotates clockwise around the compass
+    #[deprecated(since = "0.7.1", note = "Use `iter_mut()` intsead. This will be removed in 0.8.0")]
     pub fn into_array(self) -> [Led; 8] {
         [
             self.ld3,  //N
