@@ -106,18 +106,9 @@ impl Leds {
                 .into_active_high_switch(),
         };
 
-        // for led in &leds {
-        //     led.off().ok();
-        // }
-        //TODO: expose an iterator
-        leds.ld3.off().ok();
-        leds.ld4.off().ok();
-        leds.ld5.off().ok();
-        leds.ld6.off().ok();
-        leds.ld7.off().ok();
-        leds.ld8.off().ok();
-        leds.ld9.off().ok();
-        leds.ld10.off().ok();
+        for led in &mut leds {
+            led.off().ok();
+        }
 
         leds
     }
@@ -136,6 +127,14 @@ impl Leds {
         }
     }
 
+    pub fn iter(&self) -> LedsIterator {
+        LedsIterator::new(self)
+    }
+
+    pub fn iter_mut(&mut self) -> LedsMutIterator {
+        LedsMutIterator::new(self)
+    }
+
     /// Consumes the `Leds` struct and returns an array
     /// where index 0 is N and each incrementing index
     /// rotates clockwise around the compass
@@ -150,15 +149,6 @@ impl Leds {
             self.ld6,  //W
             self.ld4,  //NW
         ]
-    }
-}
-
-impl<'a> IntoIterator for &'a Leds {
-    type Item = &'a Led;
-    type IntoIter = LedsIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        LedsIterator::new(self)
     }
 }
 
@@ -189,5 +179,57 @@ impl<'a> Iterator for LedsIterator<'a> {
         };
         self.current_index += 1;
         current
+    }
+}
+
+impl<'a> IntoIterator for &'a Leds {
+    type Item = &'a Led;
+    type IntoIter = LedsIterator<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+pub struct LedsMutIterator<'a> {
+    current_index: u8,
+    leds: &'a mut Leds
+}
+
+impl<'a> LedsMutIterator<'a> {
+    fn new(leds: &'a mut Leds) -> Self {
+        LedsMutIterator { current_index: 0, leds }
+    }
+}
+
+impl<'a> Iterator for LedsMutIterator<'a> {
+    type Item = &'a mut Led;
+    fn next(&mut self) -> Option<Self::Item> {
+        let current = unsafe {
+            //Safety: Each branch is only executed once,
+            // so we can not possibly alias a mutable reference.
+                match self.current_index {
+                    0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
+                    1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
+                    2 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
+                    3 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
+                    4 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
+                    5 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
+                    6 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
+                    7 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
+                    _ => None
+            }
+        };
+        self.current_index += 1;
+        current
+    }
+}
+
+impl<'a> IntoIterator for &'a mut Leds {
+    type Item = &'a mut Led;
+    type IntoIter = LedsMutIterator<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }
