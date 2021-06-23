@@ -106,6 +106,9 @@ impl Leds {
                 .into_active_high_switch(),
         };
 
+        // for led in &leds {
+        //     led.off().ok();
+        // }
         //TODO: expose an iterator
         leds.ld3.off().ok();
         leds.ld4.off().ok();
@@ -147,5 +150,44 @@ impl Leds {
             self.ld6,  //W
             self.ld4,  //NW
         ]
+    }
+}
+
+impl<'a> IntoIterator for &'a Leds {
+    type Item = &'a Led;
+    type IntoIter = LedsIterator<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        LedsIterator::new(self)
+    }
+}
+
+pub struct LedsIterator<'a> {
+    current_index: u8,
+    leds: &'a Leds
+}
+
+impl<'a> LedsIterator<'a> {
+    fn new(leds: &'a Leds) -> Self {
+        LedsIterator { current_index: 0, leds }
+    }
+}
+
+impl<'a> Iterator for LedsIterator<'a> {
+    type Item = &'a Led;
+    fn next(&mut self) -> Option<Self::Item> {
+        let current = match self.current_index {
+            0 => Some(&self.leds.ld3),  //N
+            1 => Some(&self.leds.ld5),  //NE
+            2 => Some(&self.leds.ld7),  //E
+            3 => Some(&self.leds.ld9),  //SE
+            4 => Some(&self.leds.ld10), //S
+            5 => Some(&self.leds.ld8),  //SW
+            6 => Some(&self.leds.ld6),  //W
+            7 => Some(&self.leds.ld4),  //NW
+            _ => None
+        };
+        self.current_index += 1;
+        current
     }
 }
