@@ -196,8 +196,11 @@ impl<'a> Iterator for LedsMutIterator<'a> {
         } else {
             let current = unsafe {
                 //Safety: Each branch is only executed once,
+                // and only if there are elements left to be returned, 
                 // so we can not possibly alias a mutable reference.
-                // Oddly, this depends on DoubleSidedIterator also being implemented correctly.
+                // This depends on DoubleEndedIterator and ExactSizedIterator being implemented correctly.
+                // If len() does not return the correct number of remaining elements, 
+                // this becomes unsound.
                     match self.index {
                         0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
                         1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
