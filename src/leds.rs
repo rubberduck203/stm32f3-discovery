@@ -128,10 +128,6 @@ impl Leds {
         }
     }
 
-    pub fn iter(&self) -> LedsIterator {
-        LedsIterator::new(self)
-    }
-
     pub fn iter_mut(&mut self) -> LedsMutIterator {
         LedsMutIterator::new(self)
     }
@@ -154,15 +150,6 @@ impl Leds {
     }
 }
 
-impl<'a> IntoIterator for &'a Leds {
-    type Item = &'a Led;
-    type IntoIter = LedsIterator<'a>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.iter()
-    }
-}
-
 impl<'a> IntoIterator for &'a mut Leds {
     type Item = &'a mut Led;
     type IntoIter = LedsMutIterator<'a>;
@@ -172,73 +159,21 @@ impl<'a> IntoIterator for &'a mut Leds {
     }
 }
 
-pub struct LedsIterator<'a> {
-    current_index: usize,
-    leds: &'a Leds
-}
-
-impl<'a> LedsIterator<'a> {
-    fn new(leds: &'a Leds) -> Self {
-        LedsIterator { current_index: 0, leds }
-    }
-
-    fn len(&self) -> usize {
-        ITERATOR_SIZE - self.current_index
-    }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let length = self.len();
-        (length, Some(length))
-    }
-}
-
-impl<'a> Iterator for LedsIterator<'a> {
-    type Item = &'a Led;
-    fn next(&mut self) -> Option<Self::Item> {
-        let current = match self.current_index {
-            0 => Some(&self.leds.ld3),  //N
-            1 => Some(&self.leds.ld5),  //NE
-            2 => Some(&self.leds.ld7),  //E
-            3 => Some(&self.leds.ld9),  //SE
-            4 => Some(&self.leds.ld10), //S
-            5 => Some(&self.leds.ld8),  //SW
-            6 => Some(&self.leds.ld6),  //W
-            7 => Some(&self.leds.ld4),  //NW
-            _ => None
-        };
-        self.current_index += 1;
-        current
-    }
-
-    // Because we implement ExactSizedIterator, we need to ensure size_hint returns the right length
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        self.size_hint()
-    }
-}
-
 const ITERATOR_SIZE: usize = 8;
 
-impl<'a> ExactSizeIterator for LedsIterator<'a> {
-    fn len(&self) -> usize {
-        self.len()
-    }
-}
-
-///Marker trait that indicates LedsIterator never starts returning Some after returning None
-impl<'a> FusedIterator for LedsIterator<'a> {}
-
 pub struct LedsMutIterator<'a> {
-    current_index: usize,
+    index: usize,
+    index_back: usize,
     leds: &'a mut Leds
 }
 
 impl<'a> LedsMutIterator<'a> {
     fn new(leds: &'a mut Leds) -> Self {
-        LedsMutIterator { current_index: 0, leds }
+        LedsMutIterator { index: 0, index_back: ITERATOR_SIZE, leds }
     }
 
     fn len(&self) -> usize {
-        ITERATOR_SIZE - self.current_index
+        self.index_back - self.index
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -250,23 +185,28 @@ impl<'a> LedsMutIterator<'a> {
 impl<'a> Iterator for LedsMutIterator<'a> {
     type Item = &'a mut Led;
     fn next(&mut self) -> Option<Self::Item> {
-        let current = unsafe {
-            //Safety: Each branch is only executed once,
-            // so we can not possibly alias a mutable reference.
-                match self.current_index {
-                    0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
-                    1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
-                    2 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
-                    3 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
-                    4 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
-                    5 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
-                    6 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
-                    7 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
-                    _ => None
-            }
-        };
-        self.current_index += 1;
-        current
+        if self.len() == 0 {
+            None
+        } else {
+            let current = unsafe {
+                //Safety: Each branch is only executed once,
+                // so we can not possibly alias a mutable reference.
+                // Oddly, this depends on DoubleSidedIterator also being implemented correctly.
+                    match self.index {
+                        0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
+                        1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
+                        2 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
+                        3 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
+                        4 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
+                        5 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
+                        6 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
+                        7 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
+                        _ => None
+                }
+            };
+            self.index += 1;
+            current
+        }
     }
 
     // Because we implement ExactSizedIterator, we need to ensure size_hint returns the right length
@@ -275,9 +215,42 @@ impl<'a> Iterator for LedsMutIterator<'a> {
     }
 }
 
+impl<'a> DoubleEndedIterator for LedsMutIterator<'a> {
+    fn next_back(&mut self) -> Option<Self::Item> { 
+        if self.len() == 0 {
+            None
+        } else {
+            let current = unsafe {
+                //Safety: Each branch is only executed once,
+                // and only if there are elements left to be returned, 
+                // so we can not possibly alias a mutable reference.
+                // This depends on Iterator and ExactSizedIterator being implemented correctly.
+                // If len() does not return the correct number of remaining elements, 
+                // this becomes unsound.
+                    match self.index_back {
+                        // Because we're going backwards and index_back is a usize,
+                        // We use a one based index so we don't go negative
+                        0 => None, //done
+                        1 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
+                        2 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
+                        3 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
+                        4 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
+                        5 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
+                        6 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
+                        7 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
+                        8 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
+                        _ => None //can't happen
+                }
+            };
+            self.index_back -= 1;
+            current
+        }
+    }
+}
+
 impl<'a> ExactSizeIterator for LedsMutIterator<'a> {
     fn len(&self) -> usize {
-        ITERATOR_SIZE - self.current_index
+        self.len()
     }
 }
 

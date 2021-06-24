@@ -37,18 +37,9 @@ fn main() -> ! {
         &mut gpioe.otyper,
     );
 
-    // let mut compass = leds.into_array();
-
     loop {
         let ms_delay = 50u16;
-        // Alternative way to iterate through lights
-        // do it backwards because it's fun and easy
-        // for led in compass.iter_mut().rev() {
-        //     led.on().ok();
-        //     delay.delay_ms(ms_delay);
-        //     led.off().ok();
-        //     delay.delay_ms(ms_delay);
-        // }
+
         for led in &mut leds {
             led.on().ok();
             delay.delay_ms(ms_delay);
