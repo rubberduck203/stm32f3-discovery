@@ -37,8 +37,6 @@ fn main() -> ! {
         &mut gpioe.otyper,
     );
 
-    // let mut compass = leds.into_array();
-
     loop {
         let ms_delay = 50u16;
 
