@@ -22,6 +22,9 @@ pub enum Direction
 }
 
 impl Direction {
+    /// Provides an iterator starting with North
+    /// and moving clockwise around the compass
+    /// e.g. N -> NE -> E, etc.
     pub fn iter() -> Iter<'static, Direction> {
         static DIRECTIONS: [Direction; 8] = [
             Direction::North,
@@ -128,6 +131,9 @@ impl Leds {
         }
     }
 
+    /// Provides a mutable iterator for iterating over the on board leds.
+    /// Starts at ld3 (N) and moves clockwise.
+    /// Stops once it has iterated through all 8 leds.
     pub fn iter_mut(&mut self) -> LedsMutIterator {
         LedsMutIterator::new(self)
     }
