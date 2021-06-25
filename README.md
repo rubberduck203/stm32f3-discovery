@@ -61,6 +61,17 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.7.1
+
+- Implements an `Iterator` for the `Leds` struct and introduced the [Leds::iter_mut()](https://docs.rs/stm32f3-discovery/0.7.1/stm32f3_discovery/leds/struct.Leds.html#method.iter_mut) method.
+
+    Testing shows that direct iteration over the leds using `Leds::iter_mut()` can save up to 800 bytes off the size of the final binary over the old `Leds::into_array()` method.
+
+    See: https://github.com/rubberduck203/stm32f3-discovery/pull/41
+
+- Adds the ability to obtain a mutable reference to a led based on it's compass direction on the board. 
+
+    See: [Leds::for_direction()](https://docs.rs/stm32f3-discovery/0.7.1/stm32f3_discovery/leds/struct.Leds.html#method.for_direction)
 ### 0.7.0
 
 Updates `stm32f3xx-hal` to 0.7.0.
