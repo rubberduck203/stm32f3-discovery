@@ -118,6 +118,13 @@ impl Leds {
     }
 
     /// Mutably borrow a LED by the given direction (as noted on the board)
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// let southLed = leds.for_direction(Direction::South);
+    /// southLed.on().ok();
+    /// ```
     pub fn for_direction(&mut self, direction: Direction) -> &mut Led {
         match direction {
             Direction::North => &mut self.ld3,
@@ -132,16 +139,49 @@ impl Leds {
     }
 
     /// Provides a mutable iterator for iterating over the on board leds.
-    /// Starts at ld3 (N) and moves clockwise.
+    /// Starts at ld3 (N) and moves clockwise.  
     /// Stops once it has iterated through all 8 leds.
+    /// 
+    /// # Examples
+    /// 
+    /// Iterate over the leds clockwise
+    /// 
+    /// ```
+    /// let ms_delay = 50u16;
+    /// for led in &mut leds {
+    ///     led.on().ok();
+    ///     delay.delay_ms(ms_delay);
+    ///     led.off().ok();
+    ///     delay.delay_ms(ms_delay);
+    /// }
+    /// ```
+    /// 
+    /// Iterate over the leds counter clockwise
+    /// 
+    /// ```
+    /// let ms_delay = 50u16;
+    /// for led in leds.iter_mut().rev() {
+    ///     led.on().ok();
+    ///     delay.delay_ms(ms_delay);
+    ///     led.off().ok();
+    ///     delay.delay_ms(ms_delay);
+    /// }
+    /// ```
     pub fn iter_mut(&mut self) -> LedsMutIterator {
         LedsMutIterator::new(self)
     }
 
-    /// Consumes the `Leds` struct and returns an array
-    /// where index 0 is N and each incrementing index
-    /// rotates clockwise around the compass
-    #[deprecated(since = "0.7.1", note = "Use `iter_mut()` intsead. This will be removed in 0.8.0")]
+    /// Consumes the `Leds` struct and returns an array,
+    /// where index 0 is N and each incrementing index.  
+    /// Rotates clockwise around the compass.
+    /// 
+    /// # Warning
+    /// 
+    /// This function is maintained solely for some level of compatibility with the old F3 crate.
+    /// 
+    /// [`Self::iter_mut()`] should be prefered.
+    /// Testing suggests that using [`Self::iter_mut()`] results in an ~800 byte
+    /// reduction in final binary size.
     pub fn into_array(self) -> [Led; 8] {
         [
             self.ld3,  //N
