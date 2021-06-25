@@ -24,7 +24,7 @@ fn main() -> ! {
 
     // initialize user leds
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
-    let leds = Leds::new(
+    let mut leds = Leds::new(
         gpioe.pe8,
         gpioe.pe9,
         gpioe.pe10,
@@ -37,17 +37,13 @@ fn main() -> ! {
         &mut gpioe.otyper,
     );
 
-    let mut compass = leds.into_array();
-
     loop {
         let ms_delay = 50u16;
-        let ubound = compass.len();
-        for curr in 0..ubound {
-            let next = (curr + 1) % ubound;
 
-            compass[next].on().ok();
+        for led in &mut leds {
+            led.on().ok();
             delay.delay_ms(ms_delay);
-            compass[curr].off().ok();
+            led.off().ok();
             delay.delay_ms(ms_delay);
         }
     }
