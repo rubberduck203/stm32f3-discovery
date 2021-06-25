@@ -72,7 +72,9 @@ dual licensed as above, without any additional terms or conditions.
 - Adds the ability to obtain a mutable reference to a led based on it's compass direction on the board. 
 
     See: [Leds::for_direction()](https://docs.rs/stm32f3-discovery/0.7.1/stm32f3_discovery/leds/struct.Leds.html#method.for_direction)
-    
+
+    Contributed by [Christian Meusel](https://github.com/sirhcel)
+
 ### 0.7.0
 
 Updates `stm32f3xx-hal` to 0.7.0.
