@@ -7,7 +7,7 @@ use cortex_m::iprintln;
 use cortex_m::peripheral::syst::SystClkSource;
 use cortex_m_rt::{entry, exception};
 
-use stm32f3_discovery::accelerometer::RawAccelerometer;
+use accelerometer::{Accelerometer, RawAccelerometer};
 use stm32f3_discovery::compass::Compass;
 use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
@@ -49,8 +49,13 @@ fn main() -> ! {
 
     loop {
         let accel = compass.accel_raw().unwrap();
+        iprintln!(stim, "RawAccel:{:?}", accel);
+
+        let normalized_accel = compass.accel_norm().unwrap();
+        iprintln!(stim, "G-Force:{:?}", normalized_accel);
+
         let mag = compass.mag_raw().unwrap();
-        iprintln!(stim, "Accel:{:?}; Mag:{:?}", accel, mag);
+        iprintln!(stim, "RawMag:{:?}", mag);
 
         wait_for_interrupt();
     }

@@ -61,6 +61,10 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### 0.7.2
+
+Implements the [Accelerometer trait](https://docs.rs/accelerometer/latest/accelerometer/trait.Accelerometer.html) from the [Accelerometer crate](https://crates.io/crates/accelerometer).
+
 ### 0.7.1
 
 - Implements an `Iterator` for the `Leds` struct and introduced the [Leds::iter_mut()](https://docs.rs/stm32f3-discovery/0.7.1/stm32f3_discovery/leds/struct.Leds.html#method.iter_mut) method.

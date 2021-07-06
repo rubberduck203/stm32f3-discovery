@@ -9,7 +9,7 @@ documentation = "https://docs.rs/crate/stm32f3-discovery"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
-version = "0.7.1"
+version = "0.7.2"
 exclude = [
     ".vscode/*",
 ]
