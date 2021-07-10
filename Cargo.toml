@@ -31,7 +31,7 @@ lsm303agr = { version = "0.1.1", optional = true }
 accelerometer = "0.12.0"
 
 [features]
-default = ["revE"]
+default = ["revD"]
 revD = ["lsm303dlhc"]
 revE = ["lsm303agr"]
 

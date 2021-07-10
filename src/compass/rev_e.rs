@@ -7,8 +7,12 @@ use stm32f3xx_hal::pac;
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::rcc;
 
+use lsm303agr::Lsm303agr;
+use lsm303agr::interface::I2cInterface;
+use lsm303agr::mode::MagContinuous;
+
 type Lsm303 =
-    lsm303agr::Lsm303agr<i2c::I2c<pac::I2C1, (gpiob::PB6<gpio::AF4<OpenDrain>>, gpiob::PB7<gpio::AF4<OpenDrain>>)>, lsm303agr::mode::MagContinuous>;
+    Lsm303agr<I2cInterface<i2c::I2c<pac::I2C1, (gpiob::PB6<gpio::AF4<OpenDrain>>, gpiob::PB7<gpio::AF4<OpenDrain>>)>>, MagContinuous>;
 
 pub struct Compass {
     lsm303agr: Lsm303,
@@ -39,16 +43,19 @@ impl Compass {
         let sda = pb7.into_af4_open_drain(mode, otype, alternate_function_low);
         let i2c = i2c::I2c::new(i2c1, (scl, sda), 400_000.Hz(), clocks, advanced_periph_bus);
 
-        let lsm303agr = Lsm303::new_with_i2c(i2c)?;
+        let mut lsm303agr = Lsm303agr::new_with_i2c(i2c);
+        //FIXME: unwrap bad unless we 100% know it can't fail
         lsm303agr.init().unwrap();
-        Ok(Compass {
-            lsm303agr: lsm303agr,
-        })
+        match lsm303agr.into_mag_continuous() {
+            Ok(lsm303) => Ok(Compass{ lsm303agr: lsm303}),
+            //FIXME: this is not the right error, but it lines the types up for now
+            Err(err) => Err(i2c::Error::Arbitration) 
+        }
     }
 
     /// Read the raw magnetometer data
     pub fn mag_raw(&mut self) -> Result<I16x3, i2c::Error> {
-        let reading = self.lsm303agr.mag_data()?;
+        let reading = self.lsm303agr.mag_data().unwrap();
         Ok(I16x3::new(reading.x, reading.y, reading.z))
     }
 
