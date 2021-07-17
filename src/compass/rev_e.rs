@@ -7,8 +7,9 @@ use stm32f3xx_hal::pac;
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::rcc;
 
-type Lsm303 =
-    lsm303agr::Lsm303agr<i2c::I2c<pac::I2C1, (gpiob::PB6<gpio::AF4<OpenDrain>>, gpiob::PB7<gpio::AF4<OpenDrain>>)>, lsm303agr::mode::MagContinuous>;
+use lsm303agr::{ Lsm303agr, mode, MagOutputDataRate};
+
+type Lsm303 = Lsm303agr<lsm303agr::interface::I2cInterface<i2c::I2c<pac::I2C1, (gpiob::PB6<gpio::AF4<OpenDrain>>, gpiob::PB7<gpio::AF4<OpenDrain>>)>>, mode::MagContinuous >;
 
 pub struct Compass {
     lsm303agr: Lsm303,
@@ -26,6 +27,7 @@ impl Compass {
         clocks: rcc::Clocks,
         advanced_periph_bus: &mut rcc::APB1,
     ) -> Result<Self, stm32f3xx_hal::i2c::Error> {
+
         /*
          * Pinout:
          * PB6 -> SCL (clock)
@@ -33,22 +35,31 @@ impl Compass {
          * PE2 -> DRDY (magnometer data ready)
          * PE4 -> INT1 (configurable interrupt 1)
          * PE5 -> INT2 (configurable interrupt 2)
-         * lsm303hdlc driver uses continuos mode, so no need to wait for interrupts on DRDY
          */
         let scl = pb6.into_af4_open_drain(mode, otype, alternate_function_low);
         let sda = pb7.into_af4_open_drain(mode, otype, alternate_function_low);
         let i2c = i2c::I2c::new(i2c1, (scl, sda), 400_000.Hz(), clocks, advanced_periph_bus);
 
-        let lsm303agr = Lsm303::new_with_i2c(i2c)?;
+        let mut lsm303agr = Lsm303agr::new_with_i2c(i2c);
         lsm303agr.init().unwrap();
-        Ok(Compass {
-            lsm303agr: lsm303agr,
-        })
+        lsm303agr.set_mag_odr(MagOutputDataRate::Hz20).unwrap();
+
+        let res = match lsm303agr.into_mag_continuous() {
+            Ok(t) => {
+                Ok(Compass {
+                    lsm303agr: t,
+                })
+            },
+            // TODO: THROW DECENT ERROR HERE
+            Err(_e) => { Err(stm32f3xx_hal::i2c::Error::Nack) }
+        };
+
+        return res;
     }
 
     /// Read the raw magnetometer data
     pub fn mag_raw(&mut self) -> Result<I16x3, i2c::Error> {
-        let reading = self.lsm303agr.mag_data()?;
+        let reading = self.lsm303agr.mag_data().unwrap();
         Ok(I16x3::new(reading.x, reading.y, reading.z))
     }
 
