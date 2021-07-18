@@ -1,6 +1,6 @@
-#[cfg(feature = "revD")]
+#[cfg(not(feature = "revE"))]
 pub mod rev_d;
-#[cfg(feature = "revD")]
+#[cfg(not(feature = "revE"))]
 pub use self::rev_d::Compass;
 
 #[cfg(feature = "revE")]
