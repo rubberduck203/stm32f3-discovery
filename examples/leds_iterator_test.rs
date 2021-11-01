@@ -6,8 +6,8 @@ extern crate panic_itm;
 use cortex_m_rt::entry;
 
 use stm32f3_discovery::stm32f3xx_hal::delay::Delay;
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 
 use stm32f3_discovery::leds::Leds;
 use stm32f3_discovery::switch_hal::OutputSwitch;
@@ -71,7 +71,7 @@ fn main() -> ! {
         // we're in the middle, so panic if either of the next two calls returns a led
         iter.next().map(|_| panic!("Got a Some!"));
         iter.next_back().map(|_| panic!("Got a Some!"));
-        
+
         // turn everything back off
         for led in &mut leds {
             led.off().ok();

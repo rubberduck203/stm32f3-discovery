@@ -18,7 +18,7 @@ use stm32f3_discovery::compass::Compass;
 use stm32f3_discovery::stm32f3xx_hal;
 use stm32f3xx_hal::delay::Delay;
 use stm32f3xx_hal::pwm::tim1;
-use stm32f3xx_hal::{prelude::*, pac};
+use stm32f3xx_hal::{pac, prelude::*};
 
 #[entry]
 fn main() -> ! {
@@ -35,9 +35,18 @@ fn main() -> ! {
     // Prep the pins we need in their correct alternate function
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
 
-    let led_blue = gpioe.pe8.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
-    let led_green = gpioe.pe11.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
-    let lef_red = gpioe.pe13.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let led_blue =
+        gpioe
+            .pe8
+            .into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let led_green =
+        gpioe
+            .pe11
+            .into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let lef_red =
+        gpioe
+            .pe13
+            .into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
 
     let max_duty = 4096;
 
