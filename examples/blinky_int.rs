@@ -27,7 +27,7 @@ static TIM: Mutex<RefCell<Option<Timer<pac::TIM7>>>> = Mutex::new(RefCell::new(N
 fn TIM7() {
     free(|cs| {
         if let Some(ref mut tim7) = TIM.borrow(cs).borrow_mut().deref_mut() {
-            tim7.clear_update_interrupt_flag()
+            tim7.clear_event(Event::Update);
         }
     });
 }
@@ -39,8 +39,9 @@ fn main() -> ! {
     let mut rcc = peripherals.RCC.constrain();
 
     let clocks = rcc.cfgr.freeze(&mut flash.acr);
-    let mut timer = Timer::tim7(peripherals.TIM7, 2.Hz(), clocks, &mut rcc.apb1);
-    timer.listen(Event::Update);
+    let mut timer = Timer::new(peripherals.TIM7, clocks, &mut rcc.apb1);
+    timer.start(500u32.milliseconds());
+    timer.enable_interrupt(Event::Update);
     free(|cs| {
         TIM.borrow(cs).replace(Some(timer));
     });

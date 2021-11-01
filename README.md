@@ -61,6 +61,10 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Changelog
 
+### Unreleased
+
+- Bump HAL to 0.8.0 for getting back [`MonoTimer`](https://docs.rs/stm32f3xx-hal/0.8.0/stm32f3xx_hal/timer/struct.MonoTimer.html) which was accidentially droped with release 0.6.1 and came back with the latest release.
+
 ### 0.7.2
 
 Implements the [Accelerometer trait](https://docs.rs/accelerometer/latest/accelerometer/trait.Accelerometer.html) from the [Accelerometer crate](https://crates.io/crates/accelerometer).
