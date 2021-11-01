@@ -5,8 +5,8 @@ extern crate panic_itm;
 use cortex_m_rt::entry;
 
 use stm32f3_discovery::stm32f3xx_hal::delay::Delay;
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 
 use stm32f3_discovery::button::UserButton;
 use stm32f3_discovery::leds::Leds;

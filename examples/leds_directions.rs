@@ -6,14 +6,14 @@ extern crate panic_itm;
 use cortex_m_rt::entry;
 
 use stm32f3_discovery::stm32f3xx_hal::delay::Delay;
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Output, PushPull};
 
 use stm32f3_discovery::leds::{Direction, Leds};
-use stm32f3_discovery::switch_hal::{Switch, ActiveHigh, OutputSwitch};
+use stm32f3_discovery::switch_hal::{ActiveHigh, OutputSwitch, Switch};
 
 #[entry]
 fn main() -> ! {
@@ -44,7 +44,7 @@ fn main() -> ! {
         let fast_delay = 50u16;
         for direction in Direction::iter() {
             let led = &mut leds.for_direction(*direction);
-    
+
             led.on().ok();
             delay.delay_ms(fast_delay);
             led.off().ok();

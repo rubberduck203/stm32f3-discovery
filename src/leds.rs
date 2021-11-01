@@ -1,23 +1,71 @@
-//! Provides access to User LEDs LD3-LD10
+//! Provides access to User LEDs LD3-LD10.
+//!
+//! # Example
+//!
+//! The following demonstrates the basic process for going through and turning
+//! each LED on, off, and then toggling it to its opposite state. This is
+//! obviously contrived, and will happen very quickly with no delay between
+//! state changes; take a look at the `leds` example for a more complete
+//! demonstration of how this could be used.
+//!
+//! ```
+//! let device_periphs = pac::Peripherals::take().unwrap();
+//! let mut reset_and_clock_control = device_periphs.RCC.constrain();
+//!
+//! // initialize user leds
+//! let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
+//! let mut leds = Leds::new(
+//!     gpioe.pe8,
+//!     gpioe.pe9,
+//!     gpioe.pe10,
+//!     gpioe.pe11,
+//!     gpioe.pe12,
+//!     gpioe.pe13,
+//!     gpioe.pe14,
+//!     gpioe.pe15,
+//!     &mut gpioe.moder,
+//!     &mut gpioe.otyper,
+//! );
+//!
+//! for led in &mut leds {
+//!     led.on().ok();
+//!     led.off().ok();
+//!     led.toggle().ok();
+//! }
+//! ```
 use stm32f3xx_hal::gpio::gpioe;
 use stm32f3xx_hal::gpio::{Output, PushPull};
 
 use switch_hal::{ActiveHigh, IntoSwitch, OutputSwitch, Switch};
 
-use core::slice::Iter;
 use core::iter::FusedIterator;
+use core::slice::Iter;
 
 /// LED compass direction as noted on the board
 #[derive(Clone, Copy, Eq, PartialEq)]
-pub enum Direction
-{
+pub enum Direction {
+    /// LED LD3.
     North,
+
+    /// LED LD5.
     NorthEast,
+
+    /// LED LD7.
     East,
+
+    /// LED LD9.
     SouthEast,
+
+    /// LED LD10.
     South,
+
+    /// LED LD8.
     SouthWest,
+
+    /// LED LD6.
     West,
+
+    /// LED LD4.
     NorthWest,
 }
 
@@ -34,14 +82,42 @@ impl Direction {
             Direction::South,
             Direction::SouthWest,
             Direction::West,
-            Direction::NorthWest
+            Direction::NorthWest,
         ];
         DIRECTIONS.iter()
     }
 }
 
+/// Logical representation of an LED in the compass. Type alias for a
+/// `switch_hal::Switch`.
 type Led = Switch<gpioe::PEx<Output<PushPull>>, ActiveHigh>;
 
+/// Collection of LEDs arranged as a compass on the board.
+///
+/// To use, instantiate an `Leds` object and access the leds individually or as
+/// an iterator.
+///
+/// # Example
+///
+/// ```
+/// let device_periphs = pac::Peripherals::take().unwrap();
+/// let mut reset_and_clock_control = device_periphs.RCC.constrain();
+///
+/// // initialize user leds
+/// let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
+/// let mut leds = Leds::new(
+///     gpioe.pe8,
+///     gpioe.pe9,
+///     gpioe.pe10,
+///     gpioe.pe11,
+///     gpioe.pe12,
+///     gpioe.pe13,
+///     gpioe.pe14,
+///     gpioe.pe15,
+///     &mut gpioe.moder,
+///     &mut gpioe.otyper,
+/// );
+/// ```
 pub struct Leds {
     /// North
     pub ld3: Led,
@@ -62,7 +138,7 @@ pub struct Leds {
 }
 
 impl Leds {
-    /// Initializes the user LEDs to OFF
+    /// Creates a new `Leds` object and nitializes the compass LEDs to OFF.
     pub fn new<PE8Mode, PE9Mode, PE10Mode, PE11Mode, PE12Mode, PE13Mode, PE14Mode, PE15Mode>(
         pe8: gpioe::PE8<PE8Mode>,
         pe9: gpioe::PE9<PE9Mode>,
@@ -117,11 +193,20 @@ impl Leds {
         leds
     }
 
-    /// Mutably borrow a LED by the given direction (as noted on the board)
-    /// 
+    /// Mutably borrow a LED by the given direction (as noted on the board).
+    ///
     /// # Example
-    /// 
+    ///
     /// ```
+    /// let device_periphs = pac::Peripherals::take().unwrap();
+    /// let mut reset_and_clock_control = device_periphs.RCC.constrain();
+    /// let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
+    ///
+    /// let mut leds = Leds::new(
+    ///     gpioe.pe8,
+    ///     // See module documentation for details.
+    /// );
+    ///
     /// let southLed = leds.for_direction(Direction::South);
     /// southLed.on().ok();
     /// ```
@@ -139,13 +224,13 @@ impl Leds {
     }
 
     /// Provides a mutable iterator for iterating over the on board leds.
-    /// Starts at ld3 (N) and moves clockwise.  
+    /// Starts at ld3 (N) and moves clockwise.
     /// Stops once it has iterated through all 8 leds.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// Iterate over the leds clockwise
-    /// 
+    ///
     /// ```
     /// let ms_delay = 50u16;
     /// for led in &mut leds {
@@ -155,9 +240,9 @@ impl Leds {
     ///     delay.delay_ms(ms_delay);
     /// }
     /// ```
-    /// 
+    ///
     /// Iterate over the leds counter clockwise
-    /// 
+    ///
     /// ```
     /// let ms_delay = 50u16;
     /// for led in leds.iter_mut().rev() {
@@ -172,13 +257,13 @@ impl Leds {
     }
 
     /// Consumes the `Leds` struct and returns an array,
-    /// where index 0 is N and each incrementing index.  
+    /// where index 0 is N and each incrementing index.
     /// Rotates clockwise around the compass.
-    /// 
+    ///
     /// # Warning
-    /// 
+    ///
     /// This function is maintained solely for some level of compatibility with the old F3 crate.
-    /// 
+    ///
     /// [`Self::iter_mut()`] should be prefered.
     /// Testing suggests that using [`Self::iter_mut()`] results in an ~800 byte
     /// reduction in final binary size.
@@ -210,12 +295,16 @@ const ITERATOR_SIZE: usize = 8;
 pub struct LedsMutIterator<'a> {
     index: usize,
     index_back: usize,
-    leds: &'a mut Leds
+    leds: &'a mut Leds,
 }
 
 impl<'a> LedsMutIterator<'a> {
     fn new(leds: &'a mut Leds) -> Self {
-        LedsMutIterator { index: 0, index_back: ITERATOR_SIZE, leds }
+        LedsMutIterator {
+            index: 0,
+            index_back: ITERATOR_SIZE,
+            leds,
+        }
     }
 
     fn len(&self) -> usize {
@@ -236,21 +325,21 @@ impl<'a> Iterator for LedsMutIterator<'a> {
         } else {
             let current = unsafe {
                 //Safety: Each branch is only executed once,
-                // and only if there are elements left to be returned, 
+                // and only if there are elements left to be returned,
                 // so we can not possibly alias a mutable reference.
                 // This depends on DoubleEndedIterator and ExactSizedIterator being implemented correctly.
-                // If len() does not return the correct number of remaining elements, 
+                // If len() does not return the correct number of remaining elements,
                 // this becomes unsound.
-                    match self.index {
-                        0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
-                        1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
-                        2 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
-                        3 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
-                        4 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
-                        5 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
-                        6 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
-                        7 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
-                        _ => None
+                match self.index {
+                    0 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
+                    1 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
+                    2 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
+                    3 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
+                    4 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
+                    5 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
+                    6 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
+                    7 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
+                    _ => None,
                 }
             };
             self.index += 1;
@@ -265,30 +354,30 @@ impl<'a> Iterator for LedsMutIterator<'a> {
 }
 
 impl<'a> DoubleEndedIterator for LedsMutIterator<'a> {
-    fn next_back(&mut self) -> Option<Self::Item> { 
+    fn next_back(&mut self) -> Option<Self::Item> {
         if self.len() == 0 {
             None
         } else {
             let current = unsafe {
                 //Safety: Each branch is only executed once,
-                // and only if there are elements left to be returned, 
+                // and only if there are elements left to be returned,
                 // so we can not possibly alias a mutable reference.
                 // This depends on Iterator and ExactSizedIterator being implemented correctly.
-                // If len() does not return the correct number of remaining elements, 
+                // If len() does not return the correct number of remaining elements,
                 // this becomes unsound.
-                    match self.index_back {
-                        // Because we're going backwards and index_back is a usize,
-                        // We use a one based index so we don't go negative
-                        0 => None, //done
-                        1 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
-                        2 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
-                        3 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
-                        4 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
-                        5 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
-                        6 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
-                        7 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
-                        8 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
-                        _ => None //can't happen
+                match self.index_back {
+                    // Because we're going backwards and index_back is a usize,
+                    // We use a one based index so we don't go negative
+                    0 => None,                                        //done
+                    1 => Some(&mut *(&mut self.leds.ld3 as *mut _)),  //N
+                    2 => Some(&mut *(&mut self.leds.ld5 as *mut _)),  //NE
+                    3 => Some(&mut *(&mut self.leds.ld7 as *mut _)),  //E
+                    4 => Some(&mut *(&mut self.leds.ld9 as *mut _)),  //SE
+                    5 => Some(&mut *(&mut self.leds.ld10 as *mut _)), //S
+                    6 => Some(&mut *(&mut self.leds.ld8 as *mut _)),  //SW
+                    7 => Some(&mut *(&mut self.leds.ld6 as *mut _)),  //W
+                    8 => Some(&mut *(&mut self.leds.ld4 as *mut _)),  //NW
+                    _ => None,                                        //can't happen
                 }
             };
             self.index_back -= 1;

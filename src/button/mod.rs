@@ -2,7 +2,7 @@
 pub mod interrupt;
 
 use stm32f3xx_hal::gpio::gpioa::PA0;
-use stm32f3xx_hal::gpio::{Input, gpioa};
+use stm32f3xx_hal::gpio::{gpioa, Input};
 use switch_hal::{ActiveHigh, InputSwitch, IntoSwitch, Switch};
 
 /// Wrapper struct around `ActiveHighButton<PA0<Input>>`
@@ -16,7 +16,10 @@ impl UserButton {
     pub fn new(pa0: PA0<Input>, moder: &mut gpioa::MODER, pupdr: &mut gpioa::PUPDR) -> Self {
         // This button is equipped with an external pull-down and so there is
         // no need to use the internal one.
-        UserButton(pa0.into_floating_input(moder, pupdr).into_active_high_switch())
+        UserButton(
+            pa0.into_floating_input(moder, pupdr)
+                .into_active_high_switch(),
+        )
     }
 }
 
