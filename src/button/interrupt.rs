@@ -37,7 +37,10 @@ pub enum TriggerMode {
 ///
 /// ```
 /// let device_periphs = pac::Peripherals::take().unwrap();
-/// button::interrupt::enable(&device_periphs.EXTI, &device_periphs.SYSCFG, TriggerMode::Rising);
+/// let mut reset_and_clock_control = device_periphs.RCC.constrain();
+/// let syscfg = device_periphs.SYSCFG.constrain(&mut reset_and_clock_control.apb2)
+///
+/// button::interrupt::enable(&device_periphs.EXTI, &syscfg, TriggerMode::Rising);
 /// ```
 pub fn enable(external_interrupts: &EXTI, sysconfig: &SYSCFG, mode: TriggerMode) {
     // See chapter 14 of the reference manual
@@ -59,20 +62,19 @@ pub fn enable(external_interrupts: &EXTI, sysconfig: &SYSCFG, mode: TriggerMode)
 }
 
 fn configure_exti0(interrupt_mask: &IMR1) {
-    interrupt_mask.modify(|_, w| w.mr0().set_bit())
+    interrupt_mask.modify(|_, w| w.mr0().unmasked())
 }
 
 fn map_exti0_to_pa0(external_interrupt_config: &EXTICR1) {
-    const PORT_A_CONFIG: u8 = 0x000;
-    external_interrupt_config.modify(|_, w| unsafe { w.exti0().bits(PORT_A_CONFIG) });
+    external_interrupt_config.modify(|_, w| w.exti0().pa0());
 }
 
 fn configure_rising_edge_trigger(rising_trigger_select: &RTSR1) {
-    rising_trigger_select.modify(|_, w| w.tr0().set_bit())
+    rising_trigger_select.modify(|_, w| w.tr0().enabled())
 }
 
 fn configure_falling_edge_trigger(falling_trigger_select: &FTSR1) {
-    falling_trigger_select.modify(|_, w| w.tr0().set_bit())
+    falling_trigger_select.modify(|_, w| w.tr0().enabled())
 }
 
 fn enable_exti0() {
