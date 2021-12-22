@@ -6,8 +6,8 @@ extern crate panic_itm;
 use cortex_m_rt::entry;
 
 use stm32f3_discovery::stm32f3xx_hal::interrupt;
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::wait_for_interrupt;
 
 use core::sync::atomic::{AtomicBool, Ordering};
@@ -31,6 +31,7 @@ fn EXTI0() {
 fn main() -> ! {
     let device_periphs = pac::Peripherals::take().unwrap();
     let mut reset_and_clock_control = device_periphs.RCC.constrain();
+    let syscfg = device_periphs.SYSCFG.constrain(&mut reset_and_clock_control.apb2);
 
     // initialize user leds
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
@@ -48,11 +49,7 @@ fn main() -> ! {
     );
     let mut status_led = leds.ld3;
 
-    button::interrupt::enable(
-        &device_periphs.EXTI,
-        &device_periphs.SYSCFG,
-        TriggerMode::Rising,
-    );
+    button::interrupt::enable(&device_periphs.EXTI, &syscfg, TriggerMode::Rising);
 
     loop {
         // check to see if flag was active and clear it
