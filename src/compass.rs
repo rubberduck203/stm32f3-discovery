@@ -36,8 +36,8 @@ impl Compass {
          * PE5 -> INT2 (configurable interrupt 2)
          * lsm303hdlc driver uses continuos mode, so no need to wait for interrupts on DRDY
          */
-        let scl = pb6.into_af4_open_drain(mode, otype, alternate_function_low);
-        let sda = pb7.into_af4_open_drain(mode, otype, alternate_function_low);
+        let scl = pb6.into_af_open_drain(mode, otype, alternate_function_low);
+        let sda = pb7.into_af_open_drain(mode, otype, alternate_function_low);
         let i2c = i2c::I2c::new(i2c1, (scl, sda), 400_000.Hz(), clocks, advanced_periph_bus);
 
         let lsm303dhlc = Lsm303::new(i2c)?;
