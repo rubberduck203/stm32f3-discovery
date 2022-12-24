@@ -9,7 +9,7 @@ documentation = "https://docs.rs/crate/stm32f3-discovery"
 categories = ["embedded", "hardware-support", "no-std"]
 keywords = ["discovery", "stm32f3", "bsp", "arm"]
 license = "MIT OR Apache-2.0"
-version = "0.7.2"
+version = "0.8.0-pre.0"
 exclude = [
     ".vscode/*",
 ]
@@ -22,8 +22,8 @@ default-target = "thumbv7em-none-eabihf"
 targets = [] # build only default target for docs
 
 [dependencies]
-cortex-m = "0.7.2"
-cortex-m-rt = "0.6.14"
+cortex-m = "0.7"
+cortex-m-rt = "0.7"
 switch-hal = "0.4.0"
 # switch-hal = { git = "https://github.com/rubberduck203/switch-hal", branch = "master" }
 lsm303dlhc = "0.2.0"
@@ -32,7 +32,7 @@ accelerometer = "0.12.0"
 # For the stm32f303vc mcu
 [dependencies.stm32f3xx-hal]
 features = ["stm32f303xc", "rt"]
-version = "0.8.0"
+version = "0.9"
 
 [dev-dependencies]
 panic-halt = "0.2.0"
