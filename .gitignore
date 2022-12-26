@@ -11,6 +11,7 @@ target/
 !.vscode/launch.json
 !.vscode/tasks.json
 !.vscode/extensions.json
+!.vscode/openocd-helpers.tcl
 
 #temporary files
 .DS_Store
