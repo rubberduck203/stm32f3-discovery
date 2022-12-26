@@ -14,12 +14,13 @@
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "cargo build --examples",
-            "runToMain": true,
+            "runToEntryPoint": "true",
             "executable": "./target/thumbv7em-none-eabihf/debug/examples/${fileBasenameNoExtension}",
             "preLaunchCommands": ["break rust_begin_unwind"],
             "device": "STM32F303VCT6",
             "configFiles": [
-                "interface/stlink-v2-1.cfg",
+                "${workspaceRoot}/.vscode/openocd-helpers.tcl",
+                "interface/stlink.cfg",
                 "target/stm32f3x.cfg"
             ],
             "svdFile": "${env:HOME}/.svd/STM32F303.svd",
