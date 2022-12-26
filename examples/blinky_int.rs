@@ -10,16 +10,15 @@ use cortex_m::interrupt::{free, Mutex};
 
 use cortex_m_rt::entry;
 
+use stm32f3xx_hal::pac;
 use stm32f3xx_hal::prelude::*;
 use stm32f3xx_hal::timer::{Event, Timer};
-use stm32f3xx_hal::pac;
 
 use pac::{interrupt, Interrupt};
 
-use switch_hal::{ToggleableOutputSwitch, IntoSwitch};
+use switch_hal::{IntoSwitch, ToggleableOutputSwitch};
 
 use stm32f3_discovery::wait_for_interrupt;
-
 
 static TIM: Mutex<RefCell<Option<Timer<pac::TIM7>>>> = Mutex::new(RefCell::new(None));
 
@@ -47,13 +46,15 @@ fn main() -> ! {
     });
 
     let mut gpio = peripherals.GPIOE.split(&mut rcc.ahb);
-    let pin = gpio.pe9.into_push_pull_output(&mut gpio.moder, &mut gpio.otyper);
+    let pin = gpio
+        .pe9
+        .into_push_pull_output(&mut gpio.moder, &mut gpio.otyper);
     let mut led = pin.into_active_high_switch();
 
     unsafe {
-       pac::NVIC::unmask(Interrupt::TIM7);
-    }    
-    
+        pac::NVIC::unmask(Interrupt::TIM7);
+    }
+
     loop {
         led.toggle().ok();
         wait_for_interrupt();

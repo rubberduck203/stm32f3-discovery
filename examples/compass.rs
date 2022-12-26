@@ -9,8 +9,8 @@ use cortex_m_rt::{entry, exception};
 
 use accelerometer::{Accelerometer, RawAccelerometer};
 use stm32f3_discovery::compass::Compass;
-use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::stm32f3xx_hal::pac;
+use stm32f3_discovery::stm32f3xx_hal::prelude::*;
 use stm32f3_discovery::wait_for_interrupt;
 
 #[entry]
