@@ -35,9 +35,9 @@ fn main() -> ! {
     // Prep the pins we need in their correct alternate function
     let mut gpioe = device_periphs.GPIOE.split(&mut reset_and_clock_control.ahb);
 
-    let led_blue = gpioe.pe8.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
-    let led_green = gpioe.pe11.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
-    let lef_red = gpioe.pe13.into_af2_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let led_blue = gpioe.pe8.into_af_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let led_green = gpioe.pe11.into_af_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
+    let lef_red = gpioe.pe13.into_af_push_pull(&mut gpioe.moder, &mut gpioe.otyper, &mut gpioe.afrh);
 
     let max_duty = 4096;
 
