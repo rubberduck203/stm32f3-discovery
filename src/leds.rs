@@ -63,6 +63,7 @@ pub struct Leds {
 
 impl Leds {
     /// Initializes the user LEDs to OFF
+    #[allow(clippy::too_many_arguments)]
     pub fn new<PE8Mode, PE9Mode, PE10Mode, PE11Mode, PE12Mode, PE13Mode, PE14Mode, PE15Mode>(
         pe8: gpioe::PE8<PE8Mode>,
         pe9: gpioe::PE9<PE9Mode>,

@@ -17,6 +17,7 @@ pub struct Compass {
 
 impl Compass {
     /// Initialize the onboard Lsm303dhlc e-Compass
+    #[allow(clippy::too_many_arguments)]
     pub fn new<Pb6Mode, Pb7Mode>(
         pb6: gpiob::PB6<Pb6Mode>,
         pb7: gpiob::PB7<Pb7Mode>,
